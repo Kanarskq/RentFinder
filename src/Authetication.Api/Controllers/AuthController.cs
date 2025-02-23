@@ -31,11 +31,6 @@ public class AuthController : ControllerBase
     {
         var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
         .WithRedirectUri(returnUrl)
-        //.WithParameter("audience", "authIdentifier")
-        //.WithParameter("scope", "openid profile email offline_access audience permissions issuer")
-        //.WithParameter("response_type", "token")
-        //.WithParameter("client_id", "vkPM0tTuAKCQrm141oH62wj5MX28XCSk")
-        //.WithParameter("client_secret", "l041kPT-R_3e7BPTBxKTPxdMTKACyBf1NVirp5RMHAFkB4FZGI2kOt9iOAPSIAb8")
         .WithParameter("grant_type", "client_credentials")
         .Build();
 
