@@ -1,0 +1,6 @@
+@Authetication.Api_HostAddress = http://localhost:5105
+
+GET {{Authetication.Api_HostAddress}}/
+Accept: application/json
+
+###
