@@ -23,6 +23,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "src\Eve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateSearch", "src\RealEstateSearch\RealEstateSearch.csproj", "{642192F3-115F-4B89-B4D6-B22ED624292E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,10 @@ Global
 		{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{642192F3-115F-4B89-B4D6-B22ED624292E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{642192F3-115F-4B89-B4D6-B22ED624292E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{642192F3-115F-4B89-B4D6-B22ED624292E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{642192F3-115F-4B89-B4D6-B22ED624292E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +82,7 @@ Global
 		{885D486B-93C1-4FC8-9EF5-980F6BFFA242} = {77703A94-AC58-49CF-B473-58CD4C434768}
 		{47E2546F-CC86-4E6E-8D95-7B5C646E57B9} = {77703A94-AC58-49CF-B473-58CD4C434768}
 		{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31} = {77703A94-AC58-49CF-B473-58CD4C434768}
+		{642192F3-115F-4B89-B4D6-B22ED624292E} = {77703A94-AC58-49CF-B473-58CD4C434768}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0011511B-C029-47C0-99A6-15AC18990E86}
