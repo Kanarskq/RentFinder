@@ -15,11 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus", "src\EventBus\Ev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookings.Api", "src\Bookings.Api\Bookings.Api.csproj", "{58614B55-7240-4461-BA06-A6C98F8892F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookings.Domain", "src\Bookings.Domain\Bookings.Domain.csproj", "{A02EFE64-C806-4940-9771-3B827AAF1067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookings.Domain", "src\Bookings.Domain\Bookings.Domain.csproj", "{A02EFE64-C806-4940-9771-3B827AAF1067}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookings.Infrastructure", "src\Bookings.Infrastructure\Bookings.Infrastructure.csproj", "{885D486B-93C1-4FC8-9EF5-980F6BFFA242}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBusRabbitMQ", "src\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{47E2546F-CC86-4E6E-8D95-7B5C646E57B9}"
-
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookings.Infrastructure", "src\Bookings.Infrastructure\Bookings.Infrastructure.csproj", "{885D486B-93C1-4FC8-9EF5-980F6BFFA242}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "src\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{47E2546F-CC86-4E6E-8D95-7B5C646E57B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
 EndProject
