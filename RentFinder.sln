@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookings.Infrastructure", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "src\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{47E2546F-CC86-4E6E-8D95-7B5C646E57B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Api", "src\Authentication.Api\Authentication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateSearch", "src\RealEstateSearch\RealEstateSearch.csproj", "{642192F3-115F-4B89-B4D6-B22ED624292E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authetication.Api", "src\Authetication.Api\Authetication.Api.csproj", "{9978A56B-23C8-4EBA-ACCD-B256F2BAAF31}"
 EndProject

@@ -3,7 +3,7 @@ using Authetication.Api.Services;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
-namespace Authetication.Api;
+namespace Authentication.Api;
 
 public class ClaimsTransformation : IClaimsTransformation
 {

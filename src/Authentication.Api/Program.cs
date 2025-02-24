@@ -1,5 +1,5 @@
 using Auth0.AspNetCore.Authentication;
-using Authetication.Api;
+using Authentication.Api;
 using Authetication.Api.Data;
 using Authetication.Api.Services;
 using Microsoft.AspNetCore.Authentication;
