@@ -34,7 +34,7 @@ public class ClaimsTransformation : IClaimsTransformation
         var user = await _userService.GetUserByAuth0IdAsync(auth0Id);
         if (user == null)
         {
-            user = await _userService.CreateOrUpdateUserAsync(new Models.User
+            user = await _userService.CreateOrUpdateUserAsync(new User
             {
                 Auth0Id = auth0Id,
                 Email = principal.FindFirst(ClaimTypes.Email)?.Value ?? "",
