@@ -1,4 +1,5 @@
-﻿using RealEstateSearch.Exceptions;
+﻿using Microsoft.Extensions.Configuration;
+using RealEstateSearch.Exceptions;
 using RealEstateSearch.Models;
 using RealEstateSearch.SearchEngine;
 
@@ -9,7 +10,7 @@ public class Program
         try
         {
             Console.WriteLine("Initializing Real Estate Search Engine...");
-            var searchEngine = new RealEstateSearchEngine();
+            var searchEngineTest = new RealEstateSearchEngine();
 
             // Sample properties data
             var properties = new List<Property>
@@ -27,7 +28,7 @@ public class Program
                         Longitude = -74.0060,
                         ListingDate = DateTime.Now.AddDays(-30),
                         Amenities = new List<string> { "Parking", "Pool", "Gym" },
-                        Condition = "Excellent"
+                        Conditions = "Excellent"
                     },
                     new Property
                     {
@@ -42,7 +43,7 @@ public class Program
                         Longitude = -74.0055,
                         ListingDate = DateTime.Now.AddDays(-15),
                         Amenities = new List<string> { "Parking", "Gym" },
-                        Condition = "Excellent"
+                        Conditions = "Excellent"
                     },
                     new Property
                     {
@@ -57,13 +58,13 @@ public class Program
                         Longitude = -73.9900,
                         ListingDate = DateTime.Now.AddDays(-45),
                         Amenities = new List<string> { "Parking" },
-                        Condition = "Good"
+                        Conditions = "Good"
                     }
                 };
 
             Console.WriteLine("Loading properties...");
             // Load and validate properties
-            searchEngine.LoadProperties(properties);
+            searchEngineTest.LoadProperties(properties);
 
             Console.WriteLine("Performing advanced search...");
             // Perform advanced search
@@ -80,7 +81,7 @@ public class Program
                 DaysOnMarket = 60
             };
 
-            var searchResults = searchEngine.AdvancedSearch(searchCriteria);
+            var searchResults = searchEngineTest.AdvancedSearch(searchCriteria);
             Console.WriteLine($"Found {searchResults.Count} matching properties");
 
             foreach (var property in searchResults)
@@ -95,10 +96,10 @@ public class Program
 
             Console.WriteLine("Performing geographic clustering...");
             // Perform geographic clustering
-            var clusters = searchEngine.PerformGeographicClustering();
-            Console.WriteLine($"Found {clusters.Count} property clusters");
+            var clustersTest = searchEngineTest.PerformGeographicClustering();
+            Console.WriteLine($"Found {clustersTest.Count} property clusters");
 
-            foreach (var cluster in clusters)
+            foreach (var cluster in clustersTest)
             {
                 Console.WriteLine($"Cluster {cluster.ClusterId}:");
                 Console.WriteLine($"  Properties: {cluster.PropertyCount}");
@@ -109,13 +110,13 @@ public class Program
 
             Console.WriteLine("Performing time-based analysis...");
             // Perform time-based analysis
-            var timeAnalysis = searchEngine.PerformTimeAnalysis();
+            var timeAnalysisTest = searchEngineTest.PerformTimeAnalysis();
 
-            if (timeAnalysis.ContainsKey("AverageDaysOnMarket"))
+            if (timeAnalysisTest.ContainsKey("AverageDaysOnMarket"))
             {
-                Console.WriteLine($"Average Days on Market: {timeAnalysis["AverageDaysOnMarket"]:N1} days");
+                Console.WriteLine($"Average Days on Market: {timeAnalysisTest["AverageDaysOnMarket"]:N1} days");
 
-                var priceTrends = (Dictionary<string, double>)timeAnalysis["PriceTrends"];
+                var priceTrends = (Dictionary<string, object>)timeAnalysisTest["PriceTrends"];
                 Console.WriteLine("\nPrice Trends by Month:");
                 foreach (var trend in priceTrends)
                 {
@@ -124,7 +125,7 @@ public class Program
             }
             else
             {
-                Console.WriteLine($"Time analysis error: {timeAnalysis["Error"]}");
+                Console.WriteLine($"Time analysis error: {timeAnalysisTest["Error"]}");
             }
 
             Console.WriteLine("\nUsing similarity-based search...");
@@ -140,10 +141,10 @@ public class Program
                 YearBuilt = 2010
             };
 
-            var similarProperties = searchEngine.Search(sampleProperty, 2);
-            Console.WriteLine($"Found {similarProperties.Count} similar properties");
+            var similarPropertiesTest = searchEngineTest.Search(sampleProperty, 2);
+            Console.WriteLine($"Found {similarPropertiesTest.Count} similar properties");
 
-            foreach (var property in similarProperties)
+            foreach (var property in similarPropertiesTest)
             {
                 Console.WriteLine($"Similar Property: {property.PropertyType} in {property.Location}");
                 Console.WriteLine($"  Price: ${property.Price}");
@@ -165,5 +166,33 @@ public class Program
 
         Console.WriteLine("Press any key to exit...");
         Console.ReadKey();
+
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var searchEngine = new RealEstateSearchEngine(configuration);
+
+        searchEngine.LoadPropertiesFromDatabase();
+
+        var clusters = searchEngine.PerformGeographicClustering();
+        var timeAnalysis = searchEngine.PerformTimeAnalysis();
+
+        // Example advanced search
+        var criteria = new SearchCriteria
+        {
+            MinPrice = 100000,
+            MaxPrice = 500000,
+            MinBedrooms = 2,
+            Location = "Seattle"
+        };
+
+        var results = searchEngine.AdvancedSearch(criteria);
+
+        // Display results
+        foreach (var property in results)
+        {
+            Console.WriteLine($"Property: Price {property.Price}, {property.Bedrooms} beds, {property.Bathrooms} baths, {property.SquareFootage} sq.ft. in {property.Location}");
+        }
     }
 }

@@ -17,6 +17,6 @@ public class SearchCriteria
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public List<string> RequiredAmenities { get; set; }
-    public string Condition { get; set; }
+    public string Conditions { get; set; }
     public int? DaysOnMarket { get; set; }
 }
