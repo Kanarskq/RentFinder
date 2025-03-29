@@ -31,7 +31,7 @@ public class Property
 
     [NoColumn]
     public List<string> Amenities { get; set; } = new List<string>();
-    public string Condition { get; set; }
+    public string Conditions { get; set; }
 
     public float[] Features => new float[]
     {

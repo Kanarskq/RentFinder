@@ -1,7 +1,10 @@
-﻿using Microsoft.ML;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.ML;
+using MySql.Data.MySqlClient;
 using RealEstateSearch.Exceptions;
 using RealEstateSearch.Models;
 using RealEstateSearch.Validation;
+using System.Data;
 
 namespace RealEstateSearch.SearchEngine;
 
@@ -11,7 +14,16 @@ public class RealEstateSearchEngine
     private ITransformer _model;
     private List<Property> _properties;
     private const int MAX_CLUSTER_SIZE = 100;
-    private const double CLUSTER_RADIUS_KM = 5.0;
+    private const double CLUSTER_RADIUS_KM = 3.0;
+    private readonly string _connectionString;
+
+    public RealEstateSearchEngine(IConfiguration configuration)
+    {
+        _mlContext = new MLContext(seed: 0);
+        _properties = new List<Property>();
+        _connectionString = configuration.GetConnectionString("PropertyDatabase") ??
+            throw new InvalidOperationException("Connection string 'PropertyDatabase' not found");
+    }
 
     public RealEstateSearchEngine()
     {
@@ -59,6 +71,82 @@ public class RealEstateSearchEngine
     }
 
     // Load and preprocess the property data
+    public void LoadPropertiesFromDatabase()
+    {
+        try
+        {
+            _properties = new List<Property>();
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (var command = new MySqlCommand("SELECT * FROM properties", connection))
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var property = new Property
+                        {
+                            Price = reader.GetFloat("price"),
+                            SquareFootage = reader.GetFloat("square_footage"),
+                            Bedrooms = reader.GetFloat("bedrooms"),
+                            Bathrooms = reader.GetFloat("bathrooms"),
+                            Location = reader.GetString("location"),
+                            PropertyType = reader.GetString("property_type"),
+                            YearBuilt = reader.GetFloat("year_built"),
+                            Latitude = reader.GetDouble("latitude"),
+                            Longitude = reader.GetDouble("longitude"),
+                        };
+
+                        // Handle the listing date
+                        if (!reader.IsDBNull("listing_date"))
+                        {
+                            property.ListingDate = reader.GetDateTime("listing_date");
+                        }
+
+                        // Get amenities from a related table
+                        var propertyId = reader.GetInt32("property_id");
+
+                        var validation = ValidateProperty(property);
+                        if (validation.IsValid)
+                        {
+                            _properties.Add(property);
+                        }
+                    }
+                }
+            }
+
+            if (_properties.Count == 0)
+                throw new RealEstateSearchException("No valid properties loaded from database");
+
+
+            // Create pipeline to process only the simple features
+            var pipeline = _mlContext.Transforms
+                .Categorical.OneHotEncoding(outputColumnName: "LocationEncoded", inputColumnName: nameof(Property.Location))
+                .Append(_mlContext.Transforms.Categorical.OneHotEncoding(outputColumnName: "PropertyTypeEncoded", inputColumnName: nameof(Property.PropertyType)))
+                .Append(_mlContext.Transforms.Concatenate("Features",
+                    nameof(Property.Price),
+                    nameof(Property.SquareFootage),
+                    nameof(Property.Bedrooms),
+                    nameof(Property.Bathrooms),
+                    nameof(Property.YearBuilt),
+                    "LocationEncoded",
+                    "PropertyTypeEncoded"))
+                .Append(_mlContext.Transforms.NormalizeMinMax("NormalizedFeatures", "Features"))
+                .Append(_mlContext.Transforms.CopyColumns(outputColumnName: "Score", inputColumnName: "NormalizedFeatures")); ;
+
+            var trainingData = _mlContext.Data.LoadFromEnumerable(_properties);
+            _model = pipeline.Fit(trainingData);
+
+            Console.WriteLine($"Successfully loaded {_properties.Count} properties");
+        }
+        catch (Exception ex)
+        {
+            throw new RealEstateSearchException("Error loading properties", ex);
+        }
+    }
+
     public void LoadProperties(List<Property> properties)
     {
         try
@@ -91,7 +179,7 @@ public class RealEstateSearchEngine
                     "LocationEncoded",
                     "PropertyTypeEncoded"))
                 .Append(_mlContext.Transforms.NormalizeMinMax("NormalizedFeatures", "Features"))
-                .Append(_mlContext.Transforms.CopyColumns(outputColumnName: "Score", inputColumnName: "NormalizedFeatures")); ;
+                .Append(_mlContext.Transforms.CopyColumns(outputColumnName: "Score", inputColumnName: "NormalizedFeatures"));
 
             var trainingData = _mlContext.Data.LoadFromEnumerable(_properties);
             _model = pipeline.Fit(trainingData);
@@ -102,6 +190,30 @@ public class RealEstateSearchEngine
         {
             throw new RealEstateSearchException("Error loading properties", ex);
         }
+    }
+
+    private List<string> GetAmenitiesForProperty(int propertyId)
+    {
+        var amenities = new List<string>();
+
+        using (var connection = new MySqlConnection(_connectionString))
+        {
+            connection.Open();
+            using (var command = new MySqlCommand("SELECT amenity_name FROM property_amenities WHERE property_id = @PropertyId", connection))
+            {
+                command.Parameters.AddWithValue("@PropertyId", propertyId);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        amenities.Add(reader.GetString("amenity_name"));
+                    }
+                }
+            }
+        }
+
+        return amenities;
     }
 
     public List<PropertyCluster> PerformGeographicClustering()
@@ -122,19 +234,30 @@ public class RealEstateSearchEngine
                 CenterLongitude = property.Longitude
             };
 
+            // Current property as processed
+            processedProperties.Add(property);
+
             var nearbyProperties = _properties
-                .Where(p => !processedProperties.Contains(p) &&
-                           CalculateDistance(
-                               property.Latitude, property.Longitude,
-                               p.Latitude, p.Longitude) <= CLUSTER_RADIUS_KM)
-                .Take(MAX_CLUSTER_SIZE - 1);
+            .Where(p => !processedProperties.Contains(p) &&
+                  p != property && 
+                  CalculateDistance(
+                      property.Latitude, property.Longitude,
+                      p.Latitude, p.Longitude) <= CLUSTER_RADIUS_KM)
+            .Take(MAX_CLUSTER_SIZE - 1);
 
             cluster.Properties.AddRange(nearbyProperties);
+
+            // Mark all nearby properties as processed
+            foreach (var nearbyProperty in nearbyProperties)
+            {
+                processedProperties.Add(nearbyProperty);
+            }
+
+            // Calculate cluster statistics
             cluster.AveragePrice = cluster.Properties.Average(p => p.Price);
             cluster.PropertyCount = cluster.Properties.Count;
-
+            
             clusters.Add(cluster);
-            processedProperties.UnionWith(cluster.Properties);
         }
 
         return clusters;
@@ -158,7 +281,7 @@ public class RealEstateSearchEngine
                 .Select(g => new
                 {
                     Period = $"{g.Key.Year}-{g.Key.Month:D2}",
-                    AveragePrice = (double)g.Average(p => p.Price)
+                    AveragePrice = (object)g.Average(p => p.Price)
                 })
                 .OrderBy(x => x.Period)
                 .ToDictionary(x => x.Period, x => x.AveragePrice);
@@ -240,9 +363,9 @@ public class RealEstateSearchEngine
             results = results.Where(p => p.Amenities != null &&
                 criteria.RequiredAmenities.All(a => p.Amenities.Contains(a)));
 
-        if (!string.IsNullOrEmpty(criteria.Condition))
-            results = results.Where(p => p.Condition != null &&
-                p.Condition.Equals(criteria.Condition, StringComparison.OrdinalIgnoreCase));
+        if (!string.IsNullOrEmpty(criteria.Conditions))
+            results = results.Where(p => p.Conditions != null &&
+                p.Conditions.Equals(criteria.Conditions, StringComparison.OrdinalIgnoreCase));
 
         if (criteria.DaysOnMarket.HasValue)
             results = results.Where(p => p.ListingDate != default &&
