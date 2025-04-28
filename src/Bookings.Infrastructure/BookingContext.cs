@@ -1,22 +1,30 @@
 ﻿using Bookings.Domain.AggregatesModel.BookingAggregate;
+using Bookings.Domain.AggregatesModel.PaymentAggregate;
+using Bookings.Domain.AggregatesModel.PropertyAggregate;
+using Bookings.Domain.AggregatesModel.ReviewAggregate;
+using Bookings.Domain.AggregatesModel.UserAggregate;
 using Bookings.Domain.SeedWork;
+using Bookings.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookings.Infrastructure;
 
-public class BookingContext : DbContext, IUnitOfWork
+public class BookingContext(DbContextOptions<BookingContext> options) : DbContext(options), IUnitOfWork
 {
+    internal const string RentFinderDbMigrationsHistoryTable = "__RentFinderDbMigrationsHistory";
     public DbSet<Booking> Bookings { get; set; }
-
-    public BookingContext(DbContextOptions<BookingContext> options) : base(options)
-    {
-    }
+    public DbSet<Property> Properties { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BookingContext).Assembly);
+        modelBuilder.ApplyConfiguration(new BookingEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PropertyEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ReviewEntityTypeConfiguration());
     }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)

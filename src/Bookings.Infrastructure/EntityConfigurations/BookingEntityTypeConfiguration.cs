@@ -8,10 +8,7 @@ public class BookingEntityTypeConfiguration : IEntityTypeConfiguration<Booking>
 {
     public void Configure(EntityTypeBuilder<Booking> builder)
     {
-        builder.HasKey(b => b.BookingId);
-
-        builder.Property(b => b.BookingId)
-            .ValueGeneratedOnAdd();
+        builder.HasKey(b => b.Id);
 
         builder.Property(b => b.PropertyId)
             .IsRequired();

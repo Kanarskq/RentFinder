@@ -1,0 +1,69 @@
+﻿using Bookings.Domain.AggregatesModel.PropertyAggregate;
+using Bookings.Infrastructure;
+using Dapper;
+using MySqlConnector;
+
+namespace Bookings.Api.Application.Queries.Properties;
+public class PropertyQueries : IPropertyQueries
+{
+    private readonly string _connectionString;
+
+    public PropertyQueries(IConfiguration configuration)
+    {
+        _connectionString = configuration.GetConnectionString("RentFinder");
+    }
+
+    public async Task<Property> GetPropertyByIdAsync(int propertyId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<Property>(
+            "SELECT * FROM Properties WHERE Id = @PropertyId",
+            new { Id = propertyId }
+        );
+    }
+
+    public async Task<IEnumerable<Property>> GetAllPropertiesAsync()
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryAsync<Property>(
+            "SELECT * FROM Properties"
+        );
+    }
+
+    public async Task<IEnumerable<Property>> GetPropertiesByStatusAsync(string status)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryAsync<Property>(
+            "SELECT * FROM Properties WHERE Status = @Status",
+            new { Status = status }
+        );
+    }
+
+    public async Task<IEnumerable<Property>> GetPropertiesByOwnerAsync(int ownerId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryAsync<Property>(
+            "SELECT * FROM Properties WHERE OwnerId = @OwnerId",
+            new { OwnerId = ownerId }
+        );
+    }
+
+    public async Task<PropertyImage> GetPropertyImageAsync(int propertyId, int imageId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<PropertyImage>(
+            @"SELECT Id, PropertyId, ImageData, ImageType, Caption, UploadedAt 
+              FROM PropertyImages 
+              WHERE PropertyId = @PropertyId AND Id = @ImageId",
+            new { PropertyId = propertyId, ImageId = imageId }
+        );
+    }
+    public async Task<int> GetMostRecentPropertyIdByOwnerAsync(int ownerId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        return await connection.QueryFirstOrDefaultAsync<int>(
+            "SELECT Id FROM Properties WHERE OwnerId = @OwnerId ORDER BY CreatedAt DESC LIMIT 1",
+            new { OwnerId = ownerId }
+        );
+    }
+}

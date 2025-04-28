@@ -5,8 +5,10 @@ using RentFinder.Web.Mvc.Services;
 
 namespace RentFinder.Web.Mvc.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 [Authorize]
-public class BookingsController : Controller
+public class BookingsController : ControllerBase
 {
     private readonly IBookingService _bookingService;
 
@@ -15,37 +17,32 @@ public class BookingsController : Controller
         _bookingService = bookingService;
     }
 
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> GetUserBookings()
     {
         var bookings = await _bookingService.GetUserBookingsAsync();
-        return View(bookings);
-    }
-
-    public IActionResult Create(int propertyId)
-    {
-        return View(new BookingCreateModel { PropertyId = propertyId });
+        return Ok(bookings);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(BookingCreateModel bookingModel)
+    public async Task<IActionResult> Create([FromBody] BookingCreateModel bookingModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(bookingModel);
+            return BadRequest(ModelState);
         }
 
         var result = await _bookingService.CreateBookingAsync(bookingModel);
         if (result != null)
         {
-            TempData["SuccessMessage"] = "Booking created successfully";
-            return RedirectToAction(nameof(Details), new { id = result.BookingId });
+            return CreatedAtAction(nameof(GetById), new { id = result.BookingId }, result);
         }
 
-        ModelState.AddModelError("", "Failed to create booking");
-        return View(bookingModel);
+        return BadRequest("Failed to create booking");
     }
 
-    public async Task<IActionResult> Details(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
         var booking = await _bookingService.GetBookingDetailAsync(id);
         if (booking == null)
@@ -53,20 +50,18 @@ public class BookingsController : Controller
             return NotFound();
         }
 
-        return View(booking);
+        return Ok(booking);
     }
 
-    [HttpPost]
+    [HttpPost("{id}/cancel")]
     public async Task<IActionResult> Cancel(int id)
     {
         var result = await _bookingService.CancelBookingAsync(id);
         if (result)
         {
-            TempData["SuccessMessage"] = "Booking cancelled successfully";
-            return RedirectToAction(nameof(Index));
+            return Ok(new { success = true, message = "Booking cancelled successfully" });
         }
 
-        TempData["ErrorMessage"] = "Failed to cancel booking";
-        return RedirectToAction(nameof(Details), new { id });
+        return BadRequest(new { success = false, message = "Failed to cancel booking" });
     }
 }

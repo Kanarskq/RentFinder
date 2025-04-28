@@ -1,0 +1,361 @@
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #0056b3;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+/* Header */
+.app-header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.logo a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-nav li {
+    margin: 0 1rem;
+}
+
+.auth-actions {
+    display: flex;
+    align-items: center;
+}
+
+.login-button, .register-button, .logout-button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-button {
+    margin-right: 1rem;
+    color: #0056b3;
+}
+
+.register-button, .logout-button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+}
+
+.user-greeting {
+    margin-right: 1rem;
+}
+
+/* Auth forms */
+.auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+}
+
+    .checkbox input {
+        margin-right: 0.5rem;
+    }
+
+    .checkbox label {
+        margin-bottom: 0;
+    }
+
+.submit-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+    .submit-button:hover {
+        background-color: #003d82;
+    }
+
+.auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.error-message {
+    background-color: #ffe6e6;
+    color: #d32f2f;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+}
+
+/* Profile page */
+.profile-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+    margin-top: 2rem;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #0056b3;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+}
+
+.profile-details {
+    margin-top: 2rem;
+}
+
+.detail-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+}
+
+.detail-label {
+    font-weight: 500;
+    width: 200px;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit-profile-button, .logout-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-profile-button {
+    background-color: white;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+}
+
+/* Bookings page */
+.bookings-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-required {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+/* Chat Styles */
+.chat-page {
+    display: flex;
+    height: calc(100vh - 150px);
+}
+
+.chat-container {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.chat-list {
+    width: 250px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+    .chat-list ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .chat-list li a {
+        display: block;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+        text-decoration: none;
+        position: relative;
+    }
+
+        .chat-list li a:hover {
+            background-color: #f5f5f5;
+        }
+
+.unread-badge {
+    position: absolute;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-container {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: 10px;
+    max-width: 70%;
+}
+
+.message-content {
+    padding: 8px 12px;
+    border-radius: 18px;
+    display: inline-block;
+}
+
+.own-message {
+    margin-left: auto;
+}
+
+    .own-message .message-content {
+        background-color: #007bff;
+        color: white;
+    }
+
+.other-message .message-content {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.message-form {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+    .message-form input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        margin-right: 10px;
+    }
+
+    .message-form button {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+.select-conversation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #666;
+}

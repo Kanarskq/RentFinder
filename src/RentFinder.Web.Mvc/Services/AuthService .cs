@@ -33,6 +33,12 @@ public class AuthService : IAuthService
                 var authResponse = JsonSerializer.Deserialize<AuthResponseViewModel>(
                     responseContent,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                // Store token in session
+                if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
+                {
+                    _httpContextAccessor.HttpContext.Session.SetString("JwtToken", authResponse.Token);
+                }
 
                 return authResponse;
             }
