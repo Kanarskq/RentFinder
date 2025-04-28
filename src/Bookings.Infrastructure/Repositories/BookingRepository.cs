@@ -37,4 +37,19 @@ public class BookingRepository : IBookingRepository
     {
         return await _context.SaveChangesAsync() > 0;
     }
+
+    public Task<IEnumerable<Booking>> GetByPropertyAsync(int propertyId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Booking>> GetByUserAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Booking>> GetByStatusAsync(string status)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,7 +1,9 @@
 using Bookings.Api.Apis;
-using Bookings.Api.Application.Commands;
-using Bookings.Api.Application.Queries;
-using Bookings.Api.Infrastructure.Services;
+using Bookings.Api.Application.Commands.Bookings;
+using Bookings.Api.Application.Commands.Identities;
+using Bookings.Api.Application.Queries.Bookings;
+using Bookings.Api.Infrastructure.Services.Bookings;
+using Bookings.Api.Infrastructure.Services.Identities;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.HttpResults;

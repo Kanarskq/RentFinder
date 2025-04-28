@@ -1,0 +1,58 @@
+﻿using Bookings.Domain.AggregatesModel.ReviewAggregate;
+using MediatR;
+
+namespace Bookings.Api.Application.Commands.Reviews;
+
+public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, bool>
+{
+    private readonly IReviewRepository _reviewRepository;
+    private readonly ILogger<UpdateReviewCommandHandler> _logger;
+
+    public UpdateReviewCommandHandler(
+        IReviewRepository reviewRepository,
+        ILogger<UpdateReviewCommandHandler> logger)
+    {
+        _reviewRepository = reviewRepository ?? throw new ArgumentNullException(nameof(reviewRepository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public async Task<bool> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation(
+            "Updating review ReviewId: {ReviewId}, New Rating: {Rating}",
+            request.ReviewId, request.Rating);
+
+        try
+        {
+            // Get the existing review
+            var existingReview = await _reviewRepository.GetAsync(request.ReviewId);
+            if (existingReview == null)
+            {
+                _logger.LogWarning("Review not found for ReviewId: {ReviewId}", request.ReviewId);
+                return false;
+            }
+
+            // Update the review properties
+            existingReview.UpdateReview(request.Rating, request.Comment);
+
+            // Update the repository
+            _reviewRepository.Update(existingReview);
+
+            // Save changes to the database
+            var result = await _reviewRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+            _logger.LogInformation(
+                "Review updated successfully for ReviewId: {ReviewId}",
+                request.ReviewId);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Error updating review for ReviewId: {ReviewId}",
+                request.ReviewId);
+            return false;
+        }
+    }
+}

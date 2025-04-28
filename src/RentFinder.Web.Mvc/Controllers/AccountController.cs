@@ -5,91 +5,73 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using RentFinder.Web.Mvc.Models;
 using RentFinder.Web.Mvc.Services;
+using Microsoft.AspNetCore.Authorization;
 
-namespace RentFinder.Web.Mvc.Controllers
+namespace RentFinder.Web.Mvc.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AccountController : ControllerBase
 {
-    public class AccountController : Controller
+    private readonly IAuthService _authService;
+
+    public AccountController(IAuthService authService)
     {
-        private readonly IAuthService _authService;
+        _authService = authService;
+    }
 
-        public AccountController(IAuthService authService)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            _authService = authService;
+            return BadRequest(ModelState);
         }
 
-        public IActionResult Login(string returnUrl = null)
+        var response = await _authService.LoginAsync(model);
+        if (response != null && !string.IsNullOrEmpty(response.Token))
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        return Unauthorized(new { message = "Invalid login attempt" });
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+    {
+        if (!ModelState.IsValid)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var response = await _authService.LoginAsync(model);
-            if (response != null && !string.IsNullOrEmpty(response.Token))
-            {
-                // Store token in session
-                HttpContext.Session.SetString("JwtToken", response.Token);
-
-                if (string.IsNullOrEmpty(returnUrl))
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                return LocalRedirect(returnUrl);
-            }
-
-            ModelState.AddModelError("", "Invalid login attempt");
-            return View(model);
+            return BadRequest(ModelState);
         }
 
-        public IActionResult Register()
+        var response = await _authService.RegisterAsync(model);
+        if (response != null && !string.IsNullOrEmpty(response.Token))
         {
-            return View();
+            return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        return BadRequest(new { message = "Registration failed" });
+    }
+
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var profile = await _authService.GetUserProfileAsync();
+        if (profile == null)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var response = await _authService.RegisterAsync(model);
-            if (response != null && !string.IsNullOrEmpty(response.Token))
-            {
-                // Store token in session
-                HttpContext.Session.SetString("JwtToken", response.Token);
-                return RedirectToAction("Index", "Home");
-            }
-
-            ModelState.AddModelError("", "Registration failed");
-            return View(model);
+            return NotFound();
         }
 
-        public async Task<IActionResult> Logout()
-        {
-            await _authService.LogoutAsync();
-            HttpContext.Session.Remove("JwtToken");
-            return RedirectToAction("Index", "Home");
-        }
+        return Ok(profile);
+    }
 
-        [HttpGet]
-        public async Task<IActionResult> Profile()
-        {
-            var profile = await _authService.GetUserProfileAsync();
-            if (profile == null)
-            {
-                return RedirectToAction("Login");
-            }
-            return View(profile);
-        }
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _authService.LogoutAsync();
+        return Ok(new { message = "Logged out successfully" });
     }
 }

@@ -18,19 +18,20 @@ public class PropertiesController : Controller
         return View(new PropertySearchModel());
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Search(PropertySearchModel searchModel)
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] PropertySearchModel searchModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(searchModel);
+            return BadRequest(ModelState);
         }
 
         var results = await _realEstateService.SearchPropertiesAsync(searchModel);
-        return View("SearchResults", results);
+        return Ok(results);
     }
 
-    public async Task<IActionResult> Details(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
         var property = await _realEstateService.GetPropertyDetailAsync(id);
         if (property == null)
@@ -38,6 +39,13 @@ public class PropertiesController : Controller
             return NotFound();
         }
 
-        return View(property);
+        return Ok(property);
+    }
+
+    [HttpGet("recommended")]
+    public async Task<IActionResult> GetRecommended()
+    {
+        var recommendedProperties = await _realEstateService.GetRecommendedPropertiesAsync();
+        return Ok(recommendedProperties);
     }
 }
