@@ -1,6 +1,6 @@
 ﻿import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://localhost:7224';
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://localhost:7000';
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
@@ -30,7 +30,6 @@ apiClient.interceptors.response.use(
     response => response,
     error => {
         if (error.response && error.response.status === 401) {
-            // Redirect to login or refresh token
             window.location.href = `${BASE_URL}/auth/login?returnUrl=${window.location.href}`;
         }
         return Promise.reject(error);

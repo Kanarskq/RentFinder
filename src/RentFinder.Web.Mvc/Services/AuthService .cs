@@ -34,7 +34,6 @@ public class AuthService : IAuthService
                     responseContent,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 
-                // Store token in session
                 if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
                 {
                     _httpContextAccessor.HttpContext.Session.SetString("JwtToken", authResponse.Token);
@@ -47,7 +46,6 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in LoginAsync: {ex.Message}");
             return null;
         }
@@ -78,7 +76,6 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in RegisterAsync: {ex.Message}");
             return null;
         }
@@ -88,13 +85,11 @@ public class AuthService : IAuthService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var response = await _httpClient.PostAsync("api/auth/logout", null);
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in LogoutAsync: {ex.Message}");
             return false;
         }
@@ -104,7 +99,6 @@ public class AuthService : IAuthService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var response = await _httpClient.GetAsync("api/auth/profile");
 
             if (response.IsSuccessStatusCode)
@@ -121,7 +115,6 @@ public class AuthService : IAuthService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in GetUserProfileAsync: {ex.Message}");
             return null;
         }

@@ -26,10 +26,8 @@ public class UserService : IUserService
 
         if (existingUser == null)
         {
-            // Create new user
             user.CreatedAt = DateTime.UtcNow;
 
-            // Set default role if not specified
             if (string.IsNullOrEmpty(user.Role))
             {
                 user.Role = UserRoles.Tenant;
@@ -42,13 +40,11 @@ public class UserService : IUserService
         }
         else
         {
-            // Update existing user
             existingUser.Email = user.Email;
             existingUser.Name = user.Name;
             existingUser.EmailVerified = user.EmailVerified;
             existingUser.LastLogin = DateTime.UtcNow;
 
-            // Only update role if it's not already set
             if (string.IsNullOrEmpty(existingUser.Role))
             {
                 existingUser.Role = UserRoles.Tenant; // Default role for new users

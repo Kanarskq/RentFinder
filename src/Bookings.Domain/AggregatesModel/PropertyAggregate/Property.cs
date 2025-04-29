@@ -19,7 +19,7 @@ public class Property : Entity, IAggregateRoot
     public bool HasBalcony { get; private set; }
     public bool HasParking { get; private set; }
     public bool PetsAllowed { get; private set; }
-    public string PropertyType { get; private set; } // Apartment, House, Villa, etc.
+    public string PropertyType { get; private set; } 
     public int YearBuilt { get; private set; }
     private readonly List<PropertyImage> _images;
     public IReadOnlyCollection<PropertyImage> Images => _images;

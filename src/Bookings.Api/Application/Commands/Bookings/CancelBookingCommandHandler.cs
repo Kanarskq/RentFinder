@@ -18,7 +18,6 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
     {
         _logger.LogInformation("Handling CancelBookingCommand for BookingId: {BookingId}", request.BookingId);
 
-        // Get the booking from repository
         var booking = await _bookingRepository.GetAsync(request.BookingId);
 
         if (booking == null)
@@ -27,10 +26,8 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
             return false;
         }
 
-        // Update booking status
         booking.CancelBooking();
 
-        // Save changes
         await _bookingRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
         _logger.LogInformation("Booking successfully canceled - BookingId: {BookingId}", request.BookingId);

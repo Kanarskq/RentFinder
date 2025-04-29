@@ -46,7 +46,6 @@ public class BookingApiTests
     [Test]
     public async Task CreateBookingAsync_WithValidRequest_ReturnsOkResult()
     {
-        // Arrange
         var requestId = Guid.NewGuid();
         var request = new CreateBookingRequest(
             BookingId: 1,
@@ -62,10 +61,8 @@ public class BookingApiTests
             .Setup(m => m.Send(It.IsAny<IdentifiedCommand<CreateBookingCommand, bool>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        // Act
         var result = await BookingApi.CreateBookingAsync(requestId, request, _bookingServices);
 
-        // Assert
         Assert.IsInstanceOf<Ok>(result.Result);
         _mediatorMock.Verify(
             m => m.Send(
@@ -85,7 +82,6 @@ public class BookingApiTests
     [Test]
     public async Task CreateBookingAsync_WithEmptyRequestId_ReturnsBadRequest()
     {
-        // Arrange
         var requestId = Guid.Empty;
         var request = new CreateBookingRequest(
             BookingId: 1,
@@ -97,10 +93,8 @@ public class BookingApiTests
             Status: "Pending"
         );
 
-        // Act
         var result = await BookingApi.CreateBookingAsync(requestId, request, _bookingServices);
 
-        // Assert
         Assert.IsInstanceOf<BadRequest<string>>(result.Result);
         var badRequestResult = result.Result as BadRequest<string>;
         Assert.NotNull(badRequestResult);
@@ -114,7 +108,6 @@ public class BookingApiTests
     [Test]
     public async Task CreateBookingAsync_WhenCommandFails_ReturnsBadRequest()
     {
-        // Arrange
         var requestId = Guid.NewGuid();
         var request = new CreateBookingRequest(
             BookingId: 1,
@@ -130,10 +123,8 @@ public class BookingApiTests
             .Setup(m => m.Send(It.IsAny<IdentifiedCommand<CreateBookingCommand, bool>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        // Act
         var result = await BookingApi.CreateBookingAsync(requestId, request, _bookingServices);
 
-        // Assert
         Assert.IsInstanceOf<BadRequest<string>>(result.Result);
         var badRequestResult = result.Result as BadRequest<string>;
         Assert.NotNull(badRequestResult);
@@ -147,7 +138,6 @@ public class BookingApiTests
     [Test]
     public async Task CreateBookingAsync_VerifyLogging_LogsAppropriateMessages()
     {
-        // Arrange
         var requestId = Guid.NewGuid();
         var request = new CreateBookingRequest(
             BookingId: 1,
@@ -163,14 +153,11 @@ public class BookingApiTests
             .Setup(m => m.Send(It.IsAny<IdentifiedCommand<CreateBookingCommand, bool>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        // Mock for logger verification
         _loggerMock.Setup(x => x.BeginScope(It.IsAny<List<KeyValuePair<string, object>>>()))
             .Returns(Mock.Of<IDisposable>());
 
-        // Act
         await BookingApi.CreateBookingAsync(requestId, request, _bookingServices);
 
-        // Assert - verify logging occurs
         _loggerMock.Verify(
             x => x.Log(
                 LogLevel.Information,

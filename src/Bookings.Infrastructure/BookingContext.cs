@@ -23,6 +23,7 @@ public class BookingContext(DbContextOptions<BookingContext> options) : DbContex
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new BookingEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new PropertyEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new PropertyImageEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ReviewEntityTypeConfiguration());
     }

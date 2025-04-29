@@ -48,7 +48,6 @@ public class ClaimsTransformation : IClaimsTransformation
         }
         else
         {
-            // Existing user - update last login
             user.LastLogin = DateTime.UtcNow;
             await _userService.CreateOrUpdateUserAsync(user);
         }

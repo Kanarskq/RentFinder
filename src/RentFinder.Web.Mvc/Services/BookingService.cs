@@ -20,7 +20,6 @@ public class BookingService : IBookingService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var content = new StringContent(
                 JsonSerializer.Serialize(bookingModel),
                 Encoding.UTF8,
@@ -42,7 +41,6 @@ public class BookingService : IBookingService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in CreateBookingAsync: {ex.Message}");
             return null;
         }
@@ -52,7 +50,6 @@ public class BookingService : IBookingService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var response = await _httpClient.GetAsync("api/bookings/user");
 
             if (response.IsSuccessStatusCode)
@@ -69,7 +66,6 @@ public class BookingService : IBookingService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in GetUserBookingsAsync: {ex.Message}");
             return Array.Empty<BookingViewModel>();
         }
@@ -79,7 +75,6 @@ public class BookingService : IBookingService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var response = await _httpClient.GetAsync($"api/bookings/{bookingId}");
 
             if (response.IsSuccessStatusCode)
@@ -96,7 +91,6 @@ public class BookingService : IBookingService
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in GetBookingDetailAsync: {ex.Message}");
             return null;
         }
@@ -106,13 +100,11 @@ public class BookingService : IBookingService
     {
         try
         {
-            // Token is handled by the AuthenticationDelegationMiddleware
             var response = await _httpClient.PostAsync($"api/bookings/{bookingId}/cancel", null);
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)
         {
-            // Log exception
             Console.WriteLine($"Error in CancelBookingAsync: {ex.Message}");
             return false;
         }

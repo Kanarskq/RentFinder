@@ -17,7 +17,6 @@ public static class RentFinderRegistration
         var connectionString = configuration.GetConnectionString(ConnectionStringName)
                                ?? throw new InvalidOperationException($"Connection string: '{ConnectionStringName}' is not found in configurations.");
 
-        // Register DbContext
         services.AddDbContext<BookingContext>(options =>
         {
             options.UseMySql(
@@ -30,7 +29,6 @@ public static class RentFinderRegistration
                 });
         });
 
-        // Register repositories
         services.AddScoped<IPropertyRepository, PropertyRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();

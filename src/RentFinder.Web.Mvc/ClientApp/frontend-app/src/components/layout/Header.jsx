@@ -20,7 +20,7 @@ const Header = () => {
 
                 <nav className="main-nav">
                     <ul>
-                        <li><Link to="/properties">Properties</Link></li>
+                        <li><Link to="/similar-properties">Find Property</Link></li>
                         {isAuthenticated && (
                             <>
                                 <li><Link to="/bookings">My Bookings</Link></li>

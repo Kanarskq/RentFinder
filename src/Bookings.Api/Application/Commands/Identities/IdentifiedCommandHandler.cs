@@ -34,8 +34,7 @@ public class IdentifiedCommandHandler<T, R> : IRequestHandler<IdentifiedCommand<
 
     private async Task<bool> CheckForDuplicateRequestAsync(Guid requestId, CancellationToken cancellationToken)
     {
-        // Заглушка
         await Task.Delay(10, cancellationToken);
-        return false; // Пока что просто возвращаем false
+        return false; 
     }
 }

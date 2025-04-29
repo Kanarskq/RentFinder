@@ -6,8 +6,8 @@ using Bookings.Api.Application.Commands.Reviews;
 using Bookings.Api.Application.Queries.Bookings;
 using Bookings.Api.Application.Queries.Properties;
 using Bookings.Api.Application.Queries.Reviews;
+using Bookings.Api.Application.Queries.Users;
 using Bookings.Api.Controllers.Authentication;
-using Bookings.Api.Infrastructure.Services;
 using Bookings.Api.Infrastructure.Services.Bookings;
 using Bookings.Api.Infrastructure.Services.Properties;
 using Bookings.Api.Infrastructure.Services.Reviews;
@@ -69,6 +69,7 @@ builder.Services.AddMediatR(cfg => {
 builder.Services.AddScoped<IBookingQueries, BookingQueries>();
 builder.Services.AddScoped<IPropertyQueries, PropertyQueries>();
 builder.Services.AddScoped<IReviewQueries, ReviewQueries>();
+builder.Services.AddScoped<IUserQueries, UserQueries>();
 builder.Services.AddScoped<BookingServices>();
 builder.Services.AddScoped<PropertyServices>();
 builder.Services.AddScoped<ReviewServices>();

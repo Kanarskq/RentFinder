@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import HomePage from './pages/HomePage';
-import PropertySearchPage from './pages/PropertySearchPage';
+import SimilarPropertiesPage from './pages/SimilarPropertiesPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import CreateBookingPage from './pages/CreateBookingPage';
@@ -21,8 +21,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<MainLayout />}>
                         <Route index element={<HomePage />} />
-                        <Route path="properties" element={<PropertySearchPage />} />
-                        <Route path="properties/:id" element={<PropertyDetailPage />} />
+                        <Route path="similar-properties" element={<SimilarPropertiesPage />} />
+                        <Route path="property/:id" element={<PropertyDetailPage />} />
                         <Route path="bookings" element={
                             <PrivateRoute>
                                 <BookingsPage />

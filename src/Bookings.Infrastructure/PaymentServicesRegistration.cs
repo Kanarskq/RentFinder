@@ -13,13 +13,10 @@ public static class PaymentServicesRegistration
         // Register options
         //services.Configure<GooglePayOptions>(configuration.GetSection(GooglePayOptions.GooglePay));
 
-        // Register repositories
         services.AddScoped<IPaymentRepository, PaymentRepository>();
 
-        // Register payment services
         services.AddScoped<GooglePayService>();
 
-        // Register factory
         services.AddScoped<IPaymentServiceFactory, PaymentServiceFactory>();
     }
 }

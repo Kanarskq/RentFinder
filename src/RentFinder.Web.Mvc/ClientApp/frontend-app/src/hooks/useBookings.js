@@ -38,7 +38,6 @@ export const useBookings = (id) => {
         setError(null);
         try {
             await bookingApi.cancelBooking(id);
-            // Refresh the booking details after cancellation
             await fetchBookingById(id);
             return true;
         } catch (err) {

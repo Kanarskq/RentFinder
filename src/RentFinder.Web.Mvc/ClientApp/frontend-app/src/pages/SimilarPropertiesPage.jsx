@@ -4,7 +4,7 @@ import { propertyApi } from '../api/propertyApi';
 import SimilarPropertySearch from '../components/properties/SimilarPropertySearch';
 import PropertyList from '../components/properties/PropertyList';
 
-const HomePage = () => {
+const SimilarPropertiesPage = () => {
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -57,4 +57,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default SimilarPropertiesPage;

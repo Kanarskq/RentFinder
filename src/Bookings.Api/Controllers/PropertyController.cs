@@ -61,7 +61,6 @@ public class PropertyController : ControllerBase
         {
             foreach (var image in request.Images)
             {
-                // Assuming PropertyImageRequest has ImageData, ContentType, and Caption properties
                 var imageCommand = new AddPropertyImageCommand(
                     propertyId,
                     image.ImageData,
@@ -230,10 +229,10 @@ public class PropertyController : ControllerBase
         return BadRequest("Failed to upload image");
     }
 
-    [HttpGet("{propertyId}/images/{imageId}")]
-    public async Task<IActionResult> GetPropertyImage(int propertyId, int imageId)
+    [HttpGet("{propertyId}/image")]
+    public async Task<IActionResult> GetPropertyImage(int propertyId)
     {
-        var image = await _queries.GetPropertyImageAsync(propertyId, imageId);
+        var image = await _queries.GetPropertyImageAsync(propertyId);
 
         if (image == null)
         {
@@ -275,7 +274,7 @@ public class PropertyController : ControllerBase
                 hasParking: request.HasParking,
                 petsAllowed: request.PetsAllowed,
                 propertyType: request.PropertyType,
-                maxResults: request.MaxResults ?? 5
+                maxResults: request.MaxResults ?? 12
             );
             if (similarProperties == null || !similarProperties.Any())
             {

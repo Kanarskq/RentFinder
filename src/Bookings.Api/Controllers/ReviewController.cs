@@ -1,6 +1,8 @@
 ﻿using Bookings.Api.Application.Commands.Reviews;
 using Bookings.Api.Application.Queries.Reviews;
+using Bookings.Api.Application.Queries.Users;
 using Bookings.Api.Controllers.Request.Reviews;
+using Bookings.Domain.AggregatesModel.ReviewAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,15 +15,18 @@ public class ReviewController : ControllerBase
     private readonly ILogger<ReviewController> _logger;
     private readonly IMediator _mediator;
     private readonly IReviewQueries _queries;
+    private readonly IUserQueries _userQueries;
 
     public ReviewController(
         ILogger<ReviewController> logger,
         IMediator mediator,
-        IReviewQueries queries)
+        IReviewQueries queries,
+        IUserQueries userQueries)
     {
         _logger = logger;
         _mediator = mediator;
         _queries = queries;
+        _userQueries = userQueries;
     }
 
     [HttpPost]
@@ -75,7 +80,26 @@ public class ReviewController : ControllerBase
             return NotFound();
         }
 
-        return Ok(reviews);
+        var reviewDtos = new List<object>();
+
+        foreach (var review in reviews)
+        {
+            var userName = await _userQueries.GetUserNameById(review.UserId);
+
+            reviewDtos.Add(new
+            {
+                review.Id,
+                review.PropertyId,
+                review.UserId,
+                review.Rating,
+                review.Comment,
+                review.CreatedAt,
+                review.UpdatedAt,
+                UserName = userName
+            });
+        }
+
+        return Ok(reviewDtos);
     }
 
     [HttpGet("user/{userId}")]

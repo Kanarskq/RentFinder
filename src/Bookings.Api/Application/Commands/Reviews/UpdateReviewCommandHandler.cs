@@ -24,7 +24,6 @@ public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, b
 
         try
         {
-            // Get the existing review
             var existingReview = await _reviewRepository.GetAsync(request.ReviewId);
             if (existingReview == null)
             {
@@ -32,13 +31,10 @@ public class UpdateReviewCommandHandler : IRequestHandler<UpdateReviewCommand, b
                 return false;
             }
 
-            // Update the review properties
             existingReview.UpdateReview(request.Rating, request.Comment);
 
-            // Update the repository
             _reviewRepository.Update(existingReview);
 
-            // Save changes to the database
             var result = await _reviewRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             _logger.LogInformation(

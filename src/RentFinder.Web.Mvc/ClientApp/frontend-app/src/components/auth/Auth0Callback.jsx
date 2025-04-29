@@ -14,7 +14,6 @@ const Auth0Callback = () => {
 
                 await refreshUserProfile();
 
-                // Navigate to appropriate page
                 const state = location.state;
                 const redirectTo = state && state.from ? state.from : '/profile';
                 navigate(redirectTo, { replace: true });
