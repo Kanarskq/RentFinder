@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Проверка авторизации при загрузке
     useEffect(() => {
         fetchUserProfile();
     }, []);
@@ -22,7 +21,6 @@ export const AuthProvider = ({ children }) => {
             console.log('User profile received:', data);
 
             if (data) {
-                // Process user data
                 const user = {
                     firstName: data.name ? data.name.split(' ')[0] : '',
                     lastName: data.name ? data.name.split(' ')[1] || '' : '',
@@ -35,7 +33,6 @@ export const AuthProvider = ({ children }) => {
 
                 setCurrentUser(user);
 
-                // Save token if it came in the response
                 if (data.accessToken) {
                     console.log('Saving new token from profile response');
                     localStorage.setItem('token', data.accessToken);

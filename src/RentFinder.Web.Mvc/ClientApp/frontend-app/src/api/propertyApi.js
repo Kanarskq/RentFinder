@@ -1,15 +1,12 @@
 ﻿import apiClient from './apiClient';
 
 export const propertyApi = {
-    getRecommendedProperties: () => {
-        return apiClient.get('/properties/recommended');
-    },
 
-    searchProperties: (searchParams) => {
-        return apiClient.get('/properties/search', { params: searchParams });
+    getSimilarProperties: (similarParams) => {
+        return apiClient.post('/api/property/similar', similarParams);
     },
 
     getPropertyById: (id) => {
-        return apiClient.get(`/properties/${id}`);
+        return apiClient.get(`/api/property/${id}`);
     }
 };

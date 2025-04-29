@@ -24,7 +24,6 @@ public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, b
 
         try
         {
-            // Create the review entity
             var review = new Review(
                 request.PropertyId,
                 request.UserId,
@@ -32,10 +31,8 @@ public class CreateReviewCommandHandler : IRequestHandler<CreateReviewCommand, b
                 request.Comment
             );
 
-            // Add the review to the repository
             _reviewRepository.Add(review);
 
-            // Save changes to the database
             var result = await _reviewRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             _logger.LogInformation(

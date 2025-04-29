@@ -169,14 +169,7 @@ public class PropertySearchEngine : IPropertySearchEngine
 
         var predictions = _knnModel.Transform(dataSplit.TestSet);
 
-        var metrics = _mlContext.Clustering.Evaluate(
-            predictions,
-            scoreColumnName: "Score",
-            featureColumnName: "NormalizedFeatures");
-
-        _logger.LogInformation(
-            "KNN Model trained. Metrics: Average Distance: {AvgMinDistance}, Davies Bouldin Index: {DBI}",
-            metrics.AverageDistance, metrics.DaviesBouldinIndex);
+        _logger.LogInformation("KNN Model trained.");
     }
 
     public async Task<ModelEvaluationResults> EvaluateModelEffectivenessAsync()

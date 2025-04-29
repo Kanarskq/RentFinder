@@ -8,7 +8,6 @@ export const authApi = {
 
     logout: () => {
         console.log('Logging out...');
-        // Clear token before redirecting
         localStorage.removeItem('token');
         window.location.href = 'https://localhost:7224/auth/logout';
     },

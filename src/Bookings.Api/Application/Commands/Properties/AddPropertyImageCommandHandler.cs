@@ -20,7 +20,6 @@ public class AddPropertyImageCommandHandler : IRequestHandler<AddPropertyImageCo
     {
         try
         {
-            // Получаем свойство из репозитория
             var property = await _propertyRepository.GetAsync(request.PropertyId);
 
             if (property == null)
@@ -29,17 +28,14 @@ public class AddPropertyImageCommandHandler : IRequestHandler<AddPropertyImageCo
                 return false;
             }
 
-            // Добавляем изображение к свойству
             property.AddImage(
                 request.ImageData,
                 request.ImageType,
                 request.Caption
             );
 
-            // Обновляем свойство в репозитории
             _propertyRepository.Update(property);
 
-            // Сохраняем изменения
             var result = await _propertyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             _logger.LogInformation(

@@ -45,14 +45,6 @@ const ProfilePage = () => {
                                 {currentUser.phone || 'Not provided'}
                             </span>
                         </div>
-
-                        <h3>Preferences</h3>
-                        <div className="detail-item">
-                            <span className="detail-label">Notification Preferences:</span>
-                            <span className="detail-value">
-                                {currentUser.notificationPreferences || 'Email notifications'}
-                            </span>
-                        </div>
                     </div>
                 </div>
 

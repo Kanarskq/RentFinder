@@ -18,7 +18,6 @@ public class GooglePayService : IPaymentService
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
-        // Configure the HttpClient
         _httpClient.BaseAddress = new Uri(_options.ApiUrl);
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_options.ApiKey}");
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");

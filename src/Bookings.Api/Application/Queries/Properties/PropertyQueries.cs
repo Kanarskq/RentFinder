@@ -18,7 +18,7 @@ public class PropertyQueries : IPropertyQueries
         using var connection = new MySqlConnection(_connectionString);
         return await connection.QueryFirstOrDefaultAsync<Property>(
             "SELECT * FROM Properties WHERE Id = @PropertyId",
-            new { Id = propertyId }
+            new { PropertyId = propertyId }
         );
     }
 
@@ -48,15 +48,17 @@ public class PropertyQueries : IPropertyQueries
         );
     }
 
-    public async Task<PropertyImage> GetPropertyImageAsync(int propertyId, int imageId)
+    public async Task<PropertyImage> GetPropertyImageAsync(int propertyId)
     {
         using var connection = new MySqlConnection(_connectionString);
         return await connection.QueryFirstOrDefaultAsync<PropertyImage>(
-            @"SELECT Id, PropertyId, ImageData, ImageType, Caption, UploadedAt 
-              FROM PropertyImages 
-              WHERE PropertyId = @PropertyId AND Id = @ImageId",
-            new { PropertyId = propertyId, ImageId = imageId }
-        );
+           @"SELECT Id, PropertyId, ImageData, ImageType, Caption, UploadedAt 
+              FROM propertyimage 
+              WHERE PropertyId = @PropertyId 
+              ORDER BY Id ASC 
+              LIMIT 1",
+           new { PropertyId = propertyId }
+       );
     }
     public async Task<int> GetMostRecentPropertyIdByOwnerAsync(int ownerId)
     {

@@ -42,7 +42,6 @@ public class AuthController : ControllerBase
 
         string returnUrl = $"{frontendUrl}/auth/callback";
 
-        // Add access token to the return URL if available
         var accessToken = await HttpContext.GetTokenAsync("access_token");
         if (!string.IsNullOrEmpty(accessToken))
         {
@@ -108,7 +107,6 @@ public class AuthController : ControllerBase
             return Unauthorized("User not authenticated");
         }
 
-        // Only admins can change roles
         if (!User.IsInRole(UserRoles.Admin))
         {
             return Forbid("Only administrators can change user roles");

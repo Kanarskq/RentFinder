@@ -6,10 +6,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
 builder.Services.AddControllers();
 
-// Register HTTP clients for microservices
 builder.Services.AddHttpClient<IRealEstateService, RealEstateService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:RealEstateApi"]);
@@ -25,7 +23,6 @@ builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AuthApi"]);
 });
 
-// Add authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -53,7 +50,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "RentFinder API", Version = "v1" });
 
-    // Configure Swagger to use JWT Authentication
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -99,7 +95,6 @@ var app = builder.Build();
 
 app.UseSession();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

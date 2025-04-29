@@ -11,8 +11,8 @@ public class PropertyImage : Entity
 {
     public int Id { get; private set; }
     public int PropertyId { get; private set; }
-    public byte[] ImageData { get; private set; } // Store image as byte array
-    public string ImageType { get; private set; } // Store the content type (e.g., "image/jpeg")
+    public byte[] ImageData { get; private set; } 
+    public string ImageType { get; private set; } 
     public string Caption { get; private set; }
     public DateTime UploadedAt { get; private set; }
 
@@ -41,7 +41,7 @@ public class PropertyImage : Entity
 
         ImageData = imageData;
         ImageType = imageType;
-        UploadedAt = DateTime.UtcNow; // Update the timestamp when image is updated
+        UploadedAt = DateTime.UtcNow;
     }
 
     public void UpdateCaption(string caption)
