@@ -20,7 +20,7 @@ public class PropertyImageEntityTypeConfiguration : IEntityTypeConfiguration<Pro
 
         builder.Property(i => i.ImageData)
             .IsRequired()
-            .HasColumnType("varbinary(max)"); 
+            .HasColumnType("longblob"); 
 
         builder.Property(i => i.ImageType)
             .IsRequired()

@@ -24,4 +24,17 @@ public class UserQueries : IUserQueries
 
         return name ?? "Anonymous";
     }
+
+    public async Task<int> GetUserIdByEmail(string email)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var id = await connection.QueryFirstOrDefaultAsync <int> (
+            "SELECT Id FROM users WHERE Email = @email",
+            new { email }
+        );
+
+        return id;
+    }
 }

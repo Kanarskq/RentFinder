@@ -7,14 +7,18 @@ import PropertyDetailPage from './pages/PropertyDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import CreateBookingPage from './pages/CreateBookingPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
-import Auth0Callback from './components/auth/Auth0Callback';
+import MessagesPage from './pages/MessagesPage';
+import AuthCallback from './components/auth/AuthCallback';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/auth/PrivateRoute';
+import BookingDetailPage from './pages/BookingsPage';
 import './App.css';
+import './styles/MapStyles.css';
+import './styles/MessageStyles.css';
 
 function App() {
+
     return (
         <Router>
             <AuthProvider>
@@ -28,14 +32,23 @@ function App() {
                                 <BookingsPage />
                             </PrivateRoute>
                         } />
+                        <Route path="bookings/:id" element={
+                            <PrivateRoute>
+                                <BookingDetailPage />
+                            </PrivateRoute>
+                        } />
                         <Route path="bookings/new/:propertyId" element={
                             <PrivateRoute>
                                 <CreateBookingPage />
                             </PrivateRoute>
                         } />
+                        <Route path="chat" element={
+                            <PrivateRoute>
+                                <MessagesPage />
+                            </PrivateRoute>
+                        } />
                         <Route path="login" element={<LoginPage />} />
-                        <Route path="register" element={<RegisterPage />} />
-                        <Route path="auth/callback" element={<Auth0Callback />} />
+                        <Route path="auth/callback" element={<AuthCallback />} />
                         <Route path="profile" element={
                             <PrivateRoute>
                                 <ProfilePage />

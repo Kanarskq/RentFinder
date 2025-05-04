@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import MapLocationSelector from '../maps/MapLocationSelector';
 
 const SimilarPropertySearch = ({ onSearch }) => {
     const [searchParams, setSearchParams] = useState({
@@ -15,6 +16,16 @@ const SimilarPropertySearch = ({ onSearch }) => {
         propertyType: '',
         maxResults: 12
     });
+
+    const handleLocationSelect = (location) => {
+        if (location && typeof location === 'object' && location.lat && location.lng) {
+            setSearchParams(prev => ({
+                ...prev,
+                latitude: location.lat.toString(),
+                longitude: location.lng.toString()
+            }));
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -35,11 +46,19 @@ const SimilarPropertySearch = ({ onSearch }) => {
             bedrooms: searchParams.bedrooms ? parseInt(searchParams.bedrooms) : null,
             bathrooms: searchParams.bathrooms ? parseInt(searchParams.bathrooms) : null,
             yearBuilt: searchParams.yearBuilt ? parseInt(searchParams.yearBuilt) : null,
-            maxResults: 12 
+            maxResults: 12
         };
 
         onSearch(formattedParams);
     };
+
+    // Create proper initial location object with validation
+    const initialLocation = searchParams.latitude && searchParams.longitude
+        ? {
+            lat: parseFloat(searchParams.latitude),
+            lng: parseFloat(searchParams.longitude)
+        }
+        : null;
 
     return (
         <form className="similar-property-search-form" onSubmit={handleSubmit}>
@@ -98,7 +117,7 @@ const SimilarPropertySearch = ({ onSearch }) => {
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
-                        <option value="3">4</option>
+                        <option value="4">4</option>
                     </select>
                 </div>
             </div>
@@ -133,29 +152,37 @@ const SimilarPropertySearch = ({ onSearch }) => {
                 </div>
             </div>
 
-            <div className="form-row">
-                <div className="form-group half-width">
-                    <label htmlFor="latitude">Latitude</label>
-                    <input
-                        type="number"
-                        id="latitude"
-                        name="latitude"
-                        value={searchParams.latitude}
-                        onChange={handleChange}
-                        step="0.000001"
-                        placeholder="Latitude"
-                    />
+            <div className="form-row location-input">
+                <div className="location-coordinates">
+                    <div className="form-group half-width">
+                        <label htmlFor="latitude">Latitude</label>
+                        <input
+                            type="number"
+                            id="latitude"
+                            name="latitude"
+                            value={searchParams.latitude}
+                            onChange={handleChange}
+                            step="0.000001"
+                            placeholder="Latitude"
+                        />
+                    </div>
+                    <div className="form-group half-width">
+                        <label htmlFor="longitude">Longitude</label>
+                        <input
+                            type="number"
+                            id="longitude"
+                            name="longitude"
+                            onChange={handleChange}
+                            step="0.000001"
+                            placeholder="Longitude"
+                            value={searchParams.longitude}
+                        />
+                    </div>
                 </div>
-                <div className="form-group half-width">
-                    <label htmlFor="longitude">Longitude</label>
-                    <input
-                        type="number"
-                        id="longitude"
-                        name="longitude"
-                        value={searchParams.longitude}
-                        onChange={handleChange}
-                        step="0.000001"
-                        placeholder="Longitude"
+                <div className="map-selector-container">
+                    <MapLocationSelector
+                        onLocationSelect={handleLocationSelect}
+                        initialLocation={initialLocation}
                     />
                 </div>
             </div>

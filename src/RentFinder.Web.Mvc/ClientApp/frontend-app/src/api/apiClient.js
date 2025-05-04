@@ -14,10 +14,10 @@ apiClient.interceptors.request.use(
     config => {
         const token = localStorage.getItem('token');
         if (token) {
-            console.log('Using token:', token);
+            console.log('Adding token to request headers');
             config.headers.Authorization = `Bearer ${token}`;
         } else {
-            console.log('No token found');
+            console.log('No token found for request');
         }
         return config;
     },
@@ -29,9 +29,22 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     response => response,
     error => {
-        if (error.response && error.response.status === 401) {
-            window.location.href = `${BASE_URL}/auth/login?returnUrl=${window.location.href}`;
+        console.error('API request error:', error);
+
+        if (error.response) {
+            if (error.response.status === 401) {
+                console.log('Unauthorized request detected, redirecting to login');
+                localStorage.removeItem('token'); 
+
+                const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+                window.location.href = `/login?returnUrl=${returnUrl}`;
+            }
+
+            if (error.response.status === 0 && error.message.includes('Network Error')) {
+                console.error('CORS error detected');
+            }
         }
+
         return Promise.reject(error);
     }
 );

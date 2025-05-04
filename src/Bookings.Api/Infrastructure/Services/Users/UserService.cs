@@ -14,6 +14,11 @@ public class UserService : IUserService
         _unitOfWork = userRepository.UnitOfWork;
     }
 
+    public async Task<User?> GetUserAsync(int userId)
+    {
+        return await _userRepository.GetAsync(userId);
+    }
+
     public async Task<User?> GetUserByAuth0IdAsync(string auth0Id)
     {
         var user = await _userRepository.GetByAuth0IdAsync(auth0Id);

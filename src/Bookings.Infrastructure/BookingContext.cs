@@ -1,4 +1,5 @@
 ﻿using Bookings.Domain.AggregatesModel.BookingAggregate;
+using Bookings.Domain.AggregatesModel.MessageAggregate;
 using Bookings.Domain.AggregatesModel.PaymentAggregate;
 using Bookings.Domain.AggregatesModel.PropertyAggregate;
 using Bookings.Domain.AggregatesModel.ReviewAggregate;
@@ -17,6 +18,7 @@ public class BookingContext(DbContextOptions<BookingContext> options) : DbContex
     public DbSet<User> Users { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,6 +28,7 @@ public class BookingContext(DbContextOptions<BookingContext> options) : DbContex
         modelBuilder.ApplyConfiguration(new PropertyImageEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ReviewEntityTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new MessageEntityTypeConfiguration());
     }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)

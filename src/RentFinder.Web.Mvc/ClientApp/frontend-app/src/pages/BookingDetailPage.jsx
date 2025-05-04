@@ -1,15 +1,12 @@
 ﻿import React from 'react';
-import { useParams } from 'react-router-dom';
-import PropertyDetail from '../../components/properties/PropertyDetail';
+import BookingDetail from '../components/bookings/BookingDetail';
 
-const PropertyDetailPage = () => {
-    const { id } = useParams();
-
+const BookingDetailPage = () => {
     return (
-        <div className="property-detail-page">
-            <PropertyDetail id={id} />
+        <div className="booking-detail-page">
+            <BookingDetail />
         </div>
     );
 };
 
-export default PropertyDetailPage;
+export default BookingDetailPage;

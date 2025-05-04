@@ -1,12 +1,21 @@
 ﻿import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authApi } from '../../api/authApi';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const LoginForm = () => {
+    const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || '/';
+    const searchParams = new URLSearchParams(location.search);
+    const returnUrl = searchParams.get('returnUrl') || from;
 
     const handleExternalLogin = () => {
-        authApi.loginWithAuth0();
+        if (returnUrl) {
+            sessionStorage.setItem('returnUrl', returnUrl);
+        }
+        login();
     };
 
     return (

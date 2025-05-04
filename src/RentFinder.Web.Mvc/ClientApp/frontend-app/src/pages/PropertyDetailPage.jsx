@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { propertyApi } from '../api/propertyApi';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/PropertyStyles.css';
+import GoogleMapsComponent from '../components/maps/GoogleMapsComponent';
 import PropertyReviews from '../components/reviews/PropertyReviews';
+import ContactOwnerButton from '../components/properties/ContactOwnerButton';
 
 const PropertyDetailPage = () => {
     const { id } = useParams();
@@ -12,12 +14,23 @@ const PropertyDetailPage = () => {
     const [error, setError] = useState(null);
     const { isAuthenticated } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [mapMarker, setMapMarker] = useState(null);
 
     useEffect(() => {
         const fetchProperty = async () => {
             try {
                 const response = await propertyApi.getPropertyById(id);
                 setProperty(response.data);
+
+                // Only create the marker once we have property data
+                if (response.data) {
+                    setMapMarker({
+                        lat: response.data.latitude,
+                        lng: response.data.longitude,
+                        title: response.data.title,
+                        info: `<div class="map-info-window"><strong>${response.data.title}</strong><p>$${response.data.price}/night</p></div>`
+                    });
+                }
             } catch (err) {
                 console.error('Error fetching property details:', err);
                 setError('Failed to load property details');
@@ -29,6 +42,11 @@ const PropertyDetailPage = () => {
         if (id) {
             fetchProperty();
         }
+
+        // Cleanup function
+        return () => {
+            setMapMarker(null);
+        };
     }, [id]);
 
     const handleBookNow = () => {
@@ -40,6 +58,8 @@ const PropertyDetailPage = () => {
     };
 
     const handleFindSimilar = () => {
+        if (!property) return;
+
         const searchParams = {
             price: property.price,
             latitude: property.latitude,
@@ -134,8 +154,20 @@ const PropertyDetailPage = () => {
 
                         <div className="property-location">
                             <h3>Location</h3>
-                            <p>Latitude: {property.latitude}, Longitude: {property.longitude}</p>
-                            {/* Add a map component here */}
+                            <div className="property-map-container">
+                                {mapMarker && (
+                                    <GoogleMapsComponent
+                                        apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                                        center={{ lat: property.latitude, lng: property.longitude }}
+                                        zoom={15}
+                                        markers={[mapMarker]}
+                                        height="350px"
+                                    />
+                                )}
+                            </div>
+                            <p className="coordinates-text">
+                                Coordinates: {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
+                            </p>
                         </div>
 
                         <div className="property-actions">
@@ -151,6 +183,11 @@ const PropertyDetailPage = () => {
                             >
                                 Find Similar Properties
                             </button>
+                            <ContactOwnerButton
+                                ownerId={property.ownerId}
+                                propertyId={property.id}
+                                propertyTitle={property.title}
+                            />
                         </div>
                     </div>
                 </div>

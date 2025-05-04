@@ -1,19 +1,28 @@
 ﻿import { useState, useEffect } from 'react';
 import { bookingApi } from '../api/bookingApi';
+import { useAuth } from './useAuth';
 
 export const useBookings = (id) => {
     const [bookings, setBookings] = useState([]);
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const { currentUser } = useAuth();
 
     const fetchUserBookings = async () => {
+        if (!currentUser?.id) {
+            setError('User not authenticated');
+            return;
+        }
+
         setLoading(true);
         setError(null);
         try {
-            const response = await bookingApi.getUserBookings();
+            console.error('currentUser.id', currentUser.id);
+            const response = await bookingApi.getUserBookings(currentUser.id);
             setBookings(response.data);
         } catch (err) {
+            console.error('Error fetching bookings:', err);
             setError(err.response?.data?.message || 'Failed to fetch bookings');
         } finally {
             setLoading(false);
@@ -27,6 +36,7 @@ export const useBookings = (id) => {
             const response = await bookingApi.getBookingById(id);
             setBooking(response.data);
         } catch (err) {
+            console.error('Error fetching booking:', err);
             setError(err.response?.data?.message || 'Failed to fetch booking');
         } finally {
             setLoading(false);
@@ -38,9 +48,15 @@ export const useBookings = (id) => {
         setError(null);
         try {
             await bookingApi.cancelBooking(id);
-            await fetchBookingById(id);
+            if (booking) {
+                setBooking({
+                    ...booking,
+                    status: 'Cancelled'
+                });
+            }
             return true;
         } catch (err) {
+            console.error('Error cancelling booking:', err);
             setError(err.response?.data?.message || 'Failed to cancel booking');
             return false;
         } finally {
@@ -51,10 +67,10 @@ export const useBookings = (id) => {
     useEffect(() => {
         if (id) {
             fetchBookingById(id);
-        } else {
+        } else if (currentUser?.id) {
             fetchUserBookings();
         }
-    }, [id]);
+    }, [id, currentUser?.id]);
 
     return {
         bookings,
