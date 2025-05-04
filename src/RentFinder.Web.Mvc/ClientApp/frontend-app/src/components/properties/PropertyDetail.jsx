@@ -59,7 +59,6 @@ const PropertyDetail = () => {
                 <div className="property-location">
                     <h3>Location</h3>
                     <p>Latitude: {property.latitude}, Longitude: {property.longitude}</p>
-                    {/* Would integrate with a map component here */}
                 </div>
             </div>
 

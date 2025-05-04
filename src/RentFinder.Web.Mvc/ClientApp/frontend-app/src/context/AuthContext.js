@@ -1,72 +1,49 @@
 ﻿import React, { createContext, useState, useEffect } from 'react';
 import { authApi } from '../api/authApi';
 
-export const AuthContext = createContext(null);
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchUserProfile();
+        const initAuth = async () => {
+            try {
+                if (authApi.isAuthenticated()) {
+                    const profile = await authApi.getProfile();
+                    setCurrentUser(profile);
+                    setIsAuthenticated(true);
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('id_token');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
     }, []);
 
-    const fetchUserProfile = async () => {
-        try {
-            setLoading(true);
-            console.log('Attempting to fetch user profile...');
-            const { data } = await authApi.getUserProfile();
-
-            console.log('User profile received:', data);
-
-            if (data) {
-                const user = {
-                    firstName: data.name ? data.name.split(' ')[0] : '',
-                    lastName: data.name ? data.name.split(' ')[1] || '' : '',
-                    email: data.emailAddress,
-                    role: data.role,
-                    userId: data.userId,
-                    createdAt: new Date().toISOString(),
-                    profileImage: data.profileImage
-                };
-
-                setCurrentUser(user);
-
-                if (data.accessToken) {
-                    console.log('Saving new token from profile response');
-                    localStorage.setItem('token', data.accessToken);
-                }
-            }
-
-            setError(null);
-        } catch (err) {
-            console.error('Failed to fetch user profile:', err);
-            console.error('Error details:', err.response ? err.response.data : 'No response data');
-            setCurrentUser(null);
-            setError('Failed to fetch user profile. Please log in again.');
-        } finally {
-            setLoading(false);
-        }
+    const logout = () => {
+        authApi.logout();
+        setCurrentUser(null);
+        setIsAuthenticated(false);
     };
 
-    const logout = async () => {
-        try {
-            localStorage.removeItem('token');
-            setCurrentUser(null);
-            await authApi.logout();
-        } catch (err) {
-            console.error('Logout error:', err);
-        }
+    const login = () => {
+        authApi.loginWithAuth0();
     };
 
     const value = {
         currentUser,
+        isAuthenticated,
         loading,
-        error,
-        logout,
-        isAuthenticated: !!currentUser,
-        refreshUserProfile: fetchUserProfile
+        login,
+        logout
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

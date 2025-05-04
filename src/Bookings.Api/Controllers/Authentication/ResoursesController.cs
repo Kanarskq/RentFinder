@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookings.Api.Controllers.Authentication;
 
 [ApiController]
-[Route("api/resourses")]
+[Route("/")]
 public class ResoursesController : ControllerBase
 {
-    [HttpGet("messages")]
-    [Authorize("Admin")]
+    [HttpGet("")]
+    [Authorize]
     public IActionResult GetMessages()
     {
         return Ok(new[]

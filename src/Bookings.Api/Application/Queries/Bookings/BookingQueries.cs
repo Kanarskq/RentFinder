@@ -18,7 +18,7 @@ public class BookingQueries : IBookingQueries
     {
         using var connection = new MySqlConnection(_connectionString);
         return await connection.QueryFirstOrDefaultAsync<Booking>(
-            "SELECT * FROM Bookings WHERE BookingId = @BookingId",
+            "SELECT * FROM Bookings WHERE Id = @BookingId",
             new { BookingId = bookingId }
         );
     }

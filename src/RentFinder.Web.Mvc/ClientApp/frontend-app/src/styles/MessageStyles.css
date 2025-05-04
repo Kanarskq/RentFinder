@@ -1,0 +1,346 @@
+﻿/* src/styles/MessageStyles.css */
+
+.messages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.messages-layout {
+    display: flex;
+    height: calc(100vh - 200px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 30%;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}
+
+    .sidebar h2 {
+        padding: 15px;
+        margin: 0;
+        border-bottom: 1px solid #ddd;
+        font-size: 18px;
+        background-color: #f5f5f5;
+    }
+
+.conversation-list {
+    overflow-y: auto;
+}
+
+.conversation-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .conversation-item:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .conversation-item.selected {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    .conversation-item.unread {
+        font-weight: bold;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+.conversation-user h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.property-title {
+    color: #666;
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
+
+.conversation-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+    .conversation-preview p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 80%;
+    }
+
+.message-time {
+    font-size: 12px;
+    color: #999;
+}
+
+.empty-conversations {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+/* Message thread styles */
+.message-thread {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.message-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.message-header {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+    .message-header h3 {
+        margin: 0;
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+    }
+
+.property-reference {
+    font-size: 14px;
+    color: #666;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.message-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-bubble {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+    .message-bubble.sent {
+        align-self: flex-end;
+        background-color: #0084ff;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+
+    .message-bubble.received {
+        align-self: flex-start;
+        background-color: #f1f1f1;
+        color: #333;
+        border-bottom-left-radius: 5px;
+    }
+
+.message-content {
+    word-break: break-word;
+}
+
+.message-meta {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    font-size: 12px;
+    margin-top: 5px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.message-bubble.received .message-meta {
+    color: #999;
+}
+
+.read-status {
+    font-style: italic;
+}
+
+.message-footer {
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+.message-form {
+    display: flex;
+    gap: 10px;
+}
+
+.message-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+    .message-input:focus {
+        border-color: #0084ff;
+    }
+
+.send-button {
+    background-color: #0084ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+    .send-button:hover {
+        background-color: #0063cc;
+    }
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+}
+
+.no-messages {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+}
+
+/* Contact form styles */
+.contact-owner-form {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .contact-owner-form h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .contact-owner-form p {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .contact-owner-form .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    .contact-owner-form .btn {
+        width: 100%;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+/* Loading state */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 40px;
+}
+
+.property-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.book-now-button,
+.find-similar-button,
+.contact-owner-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 160px;
+    text-align: center;
+}
+
+.book-now-button {
+    background-color: #0066ff;
+    color: white;
+    border: none;
+}
+
+    .book-now-button:hover {
+        background-color: #0052cc;
+    }
+
+.find-similar-button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+    .find-similar-button:hover {
+        background-color: #e5e5e5;
+    }
+
+.contact-owner-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+    .contact-owner-button:hover {
+        background-color: #218838;
+    }
+
+    .contact-owner-button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+
+@media (max-width: 768px) {
+    .property-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .book-now-button,
+    .find-similar-button,
+    .contact-owner-button {
+        width: 100%;
+    }
+}

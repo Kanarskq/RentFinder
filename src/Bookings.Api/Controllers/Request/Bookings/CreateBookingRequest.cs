@@ -1,7 +1,6 @@
 ﻿namespace Bookings.Api.Controllers.Request.Bookings;
 
 public record CreateBookingRequest(
-    int BookingId,
     int PropertyId,
     int UserId,
     DateTime StartDate,

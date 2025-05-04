@@ -1,94 +1,102 @@
 ﻿import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useBookings } from '../../hooks/useBookings';
-import { formatDate, formatCurrency } from '../../utils/formatters';
 
 const BookingDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { booking, loading, error, cancelBooking } = useBookings(id);
 
-    if (loading) return <div>Loading booking details...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!booking) return <div>Booking not found</div>;
+    if (loading) return <div className="loading">Loading booking details...</div>;
+    if (error) return <div className="error-message">Error: {error}</div>;
+    if (!booking) return <div className="not-found">Booking not found</div>;
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    };
 
     const handleCancel = async () => {
         if (window.confirm('Are you sure you want to cancel this booking?')) {
-            await cancelBooking(id);
+            const success = await cancelBooking(id);
+            if (success) {
+                alert('Booking cancelled successfully');
+                navigate('/bookings');
+            }
         }
     };
 
+    const canBeCancelled = booking.status === 'Pending' || booking.status === 'Confirmed';
+
     return (
         <div className="booking-detail">
-            <h2>Booking #{booking.bookingReference}</h2>
+            <h2>Booking Details</h2>
 
-            <div className="booking-status">
-                <span className={`status-badge ${booking.status.toLowerCase()}`}>
-                    {booking.status}
-                </span>
-                <p>Booked on: {formatDate(booking.bookingDate)}</p>
-            </div>
+            <div className="booking-card detailed">
+                <div className="booking-header">
+                    <h3>Booking #{booking.id}</h3>
+                    <span className={`status-badge status-${booking.status.toLowerCase()}`}>
+                        {booking.status}
+                    </span>
+                </div>
 
-            <div className="booking-property">
-                <h3>Property Details</h3>
-                <div className="property-card">
-                    <img src={booking.property.imageUrl} alt={booking.property.title} />
-                    <div className="property-info">
-                        <h4>{booking.property.title}</h4>
-                        <p>{booking.property.address}</p>
-                        <p>{booking.property.bedrooms} beds • {booking.property.bathrooms} baths</p>
+                <div className="booking-info-section">
+                    <h4>Dates</h4>
+                    <div className="dates-group">
+                        <div className="date-item">
+                            <span>Check-in:</span>
+                            <strong>{formatDate(booking.startDate)}</strong>
+                        </div>
+                        <div className="date-item">
+                            <span>Check-out:</span>
+                            <strong>{formatDate(booking.endDate)}</strong>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="booking-dates">
-                <h3>Dates</h3>
-                <div className="date-range">
-                    <div className="date-item">
-                        <span className="date-label">Check-in:</span>
-                        <span className="date-value">{formatDate(booking.checkInDate)}</span>
-                    </div>
-                    <div className="date-item">
-                        <span className="date-label">Check-out:</span>
-                        <span className="date-value">{formatDate(booking.checkOutDate)}</span>
-                    </div>
-                    <div className="date-item">
-                        <span className="date-label">Total nights:</span>
-                        <span className="date-value">
-                            {Math.ceil((new Date(booking.checkOutDate) - new Date(booking.checkInDate)) / (1000 * 60 * 60 * 24))}
-                        </span>
-                    </div>
+                <div className="booking-info-section">
+                    <h4>Property</h4>
+                    <p>Property ID: {booking.propertyId}</p>
                 </div>
-            </div>
 
-            <div className="booking-payment">
-                <h3>Payment Summary</h3>
-                <div className="payment-details">
-                    <div className="payment-item">
-                        <span className="payment-label">Total:</span>
-                        <span className="payment-value">{formatCurrency(booking.totalPrice)}</span>
-                    </div>
-                    <div className="payment-item">
-                        <span className="payment-label">Payment Method:</span>
-                        <span className="payment-value">Credit Card (ending in 1234)</span>
-                    </div>
-                    <div className="payment-item">
-                        <span className="payment-label">Payment Status:</span>
-                        <span className="payment-value">Paid</span>
-                    </div>
+                <div className="booking-info-section">
+                    <h4>Payment Details</h4>
+                    <p>Total Price: ${booking.totalPrice.toFixed(2)}</p>
+                    {booking.paymentStatus && (
+                        <p>Payment Status: {booking.paymentStatus}</p>
+                    )}
+                    {booking.paymentMethod && (
+                        <p>Payment Method: {booking.paymentMethod}</p>
+                    )}
+                    {booking.paymentDate && (
+                        <p>Payment Date: {formatDate(booking.paymentDate)}</p>
+                    )}
                 </div>
-            </div>
 
-            {booking.canCancel && (
-                <div className="booking-actions">
+                <div className="booking-created">
+                    <p>Booking created on {formatDate(booking.createdAt)}</p>
+                </div>
+
+                {canBeCancelled && (
+                    <div className="booking-actions">
+                        <button
+                            onClick={handleCancel}
+                            className="cancel-button"
+                        >
+                            Cancel Booking
+                        </button>
+                    </div>
+                )}
+
+                <div className="back-button-container">
                     <button
-                        onClick={handleCancel}
-                        className="cancel-button"
-                        disabled={booking.status === 'CANCELLED'}
+                        onClick={() => navigate('/bookings')}
+                        className="back-button"
                     >
-                        {booking.status === 'CANCELLED' ? 'Cancelled' : 'Cancel Booking'}
+                        Back to All Bookings
                     </button>
                 </div>
-            )}
+            </div>
         </div>
     );
 };

@@ -1,9 +1,5 @@
 ﻿using Bookings.Domain.AggregatesModel.BookingAggregate;
 using MediatR;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bookings.Api.Application.Commands.Bookings
 {
@@ -32,9 +28,18 @@ namespace Bookings.Api.Application.Commands.Bookings
 
             _bookingRepository.Add(booking);
 
-            _logger.LogInformation("Booking successfully created for UserId: {UserId}", request.UserId);
+            var result = await _bookingRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            return true;
+            if (result)
+            {
+                _logger.LogInformation("Booking successfully created for UserId: {UserId}", request.UserId);
+                return true;
+            }
+            else
+            {
+                _logger.LogWarning("Failed to save booking for UserId: {UserId}", request.UserId);
+                return false;
+            }
         }
     }
 }

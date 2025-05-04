@@ -8,7 +8,9 @@ using Bookings.Api.Application.Queries.Properties;
 using Bookings.Api.Application.Queries.Reviews;
 using Bookings.Api.Application.Queries.Users;
 using Bookings.Api.Controllers.Authentication;
+using Bookings.Api.Infrastructure.Messages;
 using Bookings.Api.Infrastructure.Services.Bookings;
+using Bookings.Api.Infrastructure.Services.Messages;
 using Bookings.Api.Infrastructure.Services.Properties;
 using Bookings.Api.Infrastructure.Services.Reviews;
 using Bookings.Api.Infrastructure.Services.Search;
@@ -75,6 +77,7 @@ builder.Services.AddScoped<PropertyServices>();
 builder.Services.AddScoped<ReviewServices>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IClaimsTransformation, ClaimsTransformation>();
 
 
@@ -163,7 +166,11 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddRentFinderPersistence(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 
 var app = builder.Build();
 

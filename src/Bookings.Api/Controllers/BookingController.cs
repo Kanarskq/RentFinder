@@ -2,12 +2,14 @@
 using Bookings.Api.Application.Commands.Bookings;
 using Bookings.Api.Application.Commands.Identities;
 using Bookings.Api.Application.Queries.Bookings;
+using Bookings.Api.Application.Queries.Users;
 using Bookings.Api.Controllers.Request.Bookings;
 using Bookings.Api.Infrastructure.Services.Bookings;
 using Bookings.Domain.AggregatesModel.BookingAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace Bookings.Api.Controllers;
 
@@ -70,7 +72,7 @@ public class BookingController : ControllerBase
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetUserBookings(int userId)
     {
-        _logger.LogInformation("Getting bookings for user with ID: {UserId}", userId);
+        _logger.LogInformation("Getting bookings for user with ID: {userId}", userId);
 
         var bookings = await _queries.GetUserBookingsAsync(userId);
 

@@ -1,19 +1,19 @@
 ﻿import apiClient from './apiClient';
 
 export const bookingApi = {
-    getUserBookings: () => {
-        return apiClient.get('/bookings');
+    getUserBookings: (id) => {
+        return apiClient.get(`/api/booking/user/${id}`);
     },
 
     getBookingById: (id) => {
-        return apiClient.get(`/bookings/${id}`);
+        return apiClient.get(`/api/booking/${id}`);
     },
 
     createBooking: (bookingData) => {
-        return apiClient.post('/bookings', bookingData);
+        return apiClient.post('/api/booking', bookingData);
     },
 
     cancelBooking: (id) => {
-        return apiClient.post(`/bookings/${id}/cancel`);
+        return apiClient.delete(`/api/booking/${id}`);
     }
 };

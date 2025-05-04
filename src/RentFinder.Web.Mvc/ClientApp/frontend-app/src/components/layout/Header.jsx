@@ -40,7 +40,6 @@ const Header = () => {
                     ) : (
                         <>
                             <Link to="/login" className="login-button">Login</Link>
-                            <Link to="/register" className="register-button">Register</Link>
                         </>
                     )}
                 </div>
