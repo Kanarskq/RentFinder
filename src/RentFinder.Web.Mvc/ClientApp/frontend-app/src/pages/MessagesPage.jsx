@@ -36,11 +36,9 @@ const MessagesPage = () => {
             const messages = await messageApi.getConversation(conversation.otherUserId);
             setCurrentMessages(messages);
 
-            // Mark conversation as read if it has unread messages
             if (!conversation.hasReadMessages) {
                 await messageApi.markAsRead(conversation.id);
 
-                // Update the local conversations list to mark this conversation as read
                 setConversations(prev =>
                     prev.map(conv =>
                         conv.id === conversation.id
@@ -64,10 +62,8 @@ const MessagesPage = () => {
                 selectedConversation.propertyId
             );
 
-            // Add the new message to the current conversation
             setCurrentMessages(prev => [...prev, newMessage]);
 
-            // Update the conversations list with the new message
             setConversations(prev =>
                 prev.map(conv =>
                     conv.id === selectedConversation.id

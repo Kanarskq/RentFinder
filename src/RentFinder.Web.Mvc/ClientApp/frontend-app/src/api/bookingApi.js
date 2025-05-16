@@ -15,5 +15,13 @@ export const bookingApi = {
 
     cancelBooking: (id) => {
         return apiClient.delete(`/api/booking/${id}`);
+    },
+
+    createPaymentIntent: (data) => {
+        return apiClient.post('/api/payment/create-payment-intent', data);
+    },
+
+    confirmPayment: (data) => {
+        return apiClient.post('/api/payment/confirm-payment', data);
     }
 };

@@ -1,13 +1,16 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { propertyApi } from '../api/propertyApi';
 import SimilarPropertySearch from '../components/properties/SimilarPropertySearch';
+import { AuthContext } from '../context/AuthContext';
 import PropertyList from '../components/properties/PropertyList';
+import AddPropertyButton from '../components/properties/AddPropertyButton';
 
 const SimilarPropertiesPage = () => {
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const { isAuthenticated } = useContext(AuthContext);
     const [searched, setSearched] = useState(false);
     const location = useLocation();
 
@@ -38,11 +41,7 @@ const SimilarPropertiesPage = () => {
 
     return (
         <div className="similar-properties-page">
-            <div className="page-header">
-                <h1>Find Properties</h1>
-                <p>Search for properties that match your specific criteria</p>
-            </div>
-
+            {isAuthenticated && <AddPropertyButton />}
             <div className="search-container">
                 <SimilarPropertySearch onSearch={handleSearch} />
             </div>

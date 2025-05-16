@@ -32,7 +32,6 @@ namespace Bookings.Tests
             _userServiceMock = new Mock<IUserService>();
             _controller = new MessageController(_loggerMock.Object, _messageServiceMock.Object, _userServiceMock.Object);
 
-            // Setup the controller's User (ClaimsPrincipal)
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "auth0|123456789"),
@@ -49,7 +48,6 @@ namespace Bookings.Tests
         [Test]
         public async Task GetAllConversations_WhenUserExists_ReturnsOkResultWithConversations()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             var user = new User { Id = 1, Auth0Id = auth0Id };
             var conversations = new List<Conversation>
@@ -69,10 +67,8 @@ namespace Bookings.Tests
                 .Setup(m => m.GetAllConversationsAsync(user.Id))
                 .ReturnsAsync(conversations);
 
-            // Act
             var result = await _controller.GetAllConversations();
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(conversations, okResult.Value);
@@ -81,17 +77,14 @@ namespace Bookings.Tests
         [Test]
         public async Task GetAllConversations_WhenUserDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
 
             _userServiceMock
                 .Setup(u => u.GetUserByAuth0IdAsync(auth0Id))
                 .ReturnsAsync((User)null);
 
-            // Act
             var result = await _controller.GetAllConversations();
 
-            // Assert
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual("User not found", notFoundResult.Value);
@@ -100,7 +93,6 @@ namespace Bookings.Tests
         [Test]
         public async Task GetConversation_WhenUserAndConversationExist_ReturnsOkResultWithMessages()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             int otherUserId = 2;
             var user = new User { Id = 1, Auth0Id = auth0Id };
@@ -123,22 +115,18 @@ namespace Bookings.Tests
                 .Setup(m => m.GetConversationAsync(user.Id, otherUserId))
                 .ReturnsAsync(messages);
 
-            // Act
             var result = await _controller.GetConversation(otherUserId);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(messages, okResult.Value);
 
-            // Verify the conversation was marked as read
             _messageServiceMock.Verify(m => m.MarkConversationAsReadAsync(user.Id, otherUserId), Times.Once);
         }
 
         [Test]
         public async Task SendMessage_WhenUsersExist_ReturnsOkResultWithMessage()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             var sender = new User { Id = 1, Auth0Id = auth0Id };
             var receiver = new User { Id = 2 };
@@ -161,10 +149,8 @@ namespace Bookings.Tests
                 .Setup(m => m.SendMessageAsync(sender.Id, receiver.Id, request.Content, request.PropertyId))
                 .ReturnsAsync(message);
 
-            // Act
             var result = await _controller.SendMessage(request);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(message, okResult.Value);
@@ -173,7 +159,6 @@ namespace Bookings.Tests
         [Test]
         public async Task SendMessage_WhenSenderDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             var request = new SendMessageRequest(
                 ReceiverId: 2,
@@ -185,10 +170,8 @@ namespace Bookings.Tests
                 .Setup(u => u.GetUserByAuth0IdAsync(auth0Id))
                 .ReturnsAsync((User)null);
 
-            // Act
             var result = await _controller.SendMessage(request);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual("Sender user not found", notFoundResult.Value);
@@ -197,7 +180,6 @@ namespace Bookings.Tests
         [Test]
         public async Task SendMessage_WhenReceiverDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             var sender = new User { Id = 1, Auth0Id = auth0Id };
             var request = new SendMessageRequest(
@@ -214,10 +196,8 @@ namespace Bookings.Tests
                 .Setup(u => u.GetUserAsync(request.ReceiverId))
                 .ReturnsAsync((User)null);
 
-            // Act
             var result = await _controller.SendMessage(request);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual("Receiver user not found", notFoundResult.Value);
@@ -226,7 +206,6 @@ namespace Bookings.Tests
         [Test]
         public async Task MarkAsRead_WhenUserExists_ReturnsOkResult()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             var user = new User { Id = 1, Auth0Id = auth0Id };
             string conversationId = "1-2"; // Format: {userId}-{otherUserId}
@@ -236,10 +215,8 @@ namespace Bookings.Tests
                 .Setup(u => u.GetUserByAuth0IdAsync(auth0Id))
                 .ReturnsAsync(user);
 
-            // Act
             var result = await _controller.MarkAsRead(conversationId);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
             _messageServiceMock.Verify(m => m.MarkConversationAsReadAsync(user.Id, otherUserId), Times.Once);
         }
@@ -247,7 +224,6 @@ namespace Bookings.Tests
         [Test]
         public async Task MarkAsRead_WhenUserDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             string auth0Id = "auth0|123456789";
             string conversationId = "1-2";
 
@@ -255,10 +231,8 @@ namespace Bookings.Tests
                 .Setup(u => u.GetUserByAuth0IdAsync(auth0Id))
                 .ReturnsAsync((User)null);
 
-            // Act
             var result = await _controller.MarkAsRead(conversationId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundObjectResult>(result);
             var notFoundResult = result as NotFoundObjectResult;
             Assert.AreEqual("User not found", notFoundResult.Value);

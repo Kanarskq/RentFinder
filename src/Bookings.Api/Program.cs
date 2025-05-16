@@ -11,6 +11,7 @@ using Bookings.Api.Controllers.Authentication;
 using Bookings.Api.Infrastructure.Messages;
 using Bookings.Api.Infrastructure.Services.Bookings;
 using Bookings.Api.Infrastructure.Services.Messages;
+using Bookings.Api.Infrastructure.Services.Payments;
 using Bookings.Api.Infrastructure.Services.Properties;
 using Bookings.Api.Infrastructure.Services.Reviews;
 using Bookings.Api.Infrastructure.Services.Search;
@@ -26,6 +27,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Stripe;
+using Bookings.Domain.AggregatesModel.PaymentAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +71,11 @@ builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly);
 });
 
+builder.Services.AddSingleton<StripeClient>(provider =>
+    new StripeClient(builder.Configuration["Stripe:SecretKey"]));
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
 builder.Services.AddScoped<IBookingQueries, BookingQueries>();
 builder.Services.AddScoped<IPropertyQueries, PropertyQueries>();
 builder.Services.AddScoped<IReviewQueries, ReviewQueries>();
@@ -79,11 +87,7 @@ builder.Services.AddScoped<ReviewServices>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IClaimsTransformation, ClaimsTransformation>();
-
-
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 builder.Services.AddScoped<IRequestHandler<CreateBookingCommand, bool>, CreateBookingCommandHandler>();
 builder.Services.AddScoped<IRequestHandler<CancelBookingCommand, bool>, CancelBookingCommandHandler>();
@@ -149,8 +153,6 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
 var allowedOrigins = builder.Configuration["AllowedOrigins:ReactApp"];
 
