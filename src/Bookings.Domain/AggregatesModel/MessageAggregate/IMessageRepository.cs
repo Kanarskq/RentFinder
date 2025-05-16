@@ -1,9 +1,10 @@
-﻿using Bookings.Domain.AggregatesModel.MessageAggregate;
+﻿using Bookings.Domain.AggregatesModel.BookingAggregate;
+using Bookings.Domain.AggregatesModel.MessageAggregate;
 using Bookings.Domain.SeedWork;
 
 namespace Bookings.Domain.AggregatesModel.MessageAggregate;
 
-public interface IMessageRepository
+public interface IMessageRepository : IRepository<Message>
 {
     IUnitOfWork UnitOfWork { get; }
 

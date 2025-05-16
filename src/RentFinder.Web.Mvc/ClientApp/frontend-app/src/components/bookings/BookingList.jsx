@@ -14,26 +14,13 @@ const BookingList = () => {
         console.log("Error state:", error);
     }, [currentUser, bookings, loading, error]);
 
-    const handleManualRefresh = () => {
-        console.log("Manually refreshing bookings...");
-        refreshBookings();
-    };
-
     if (loading) return <div className="loading">Loading your bookings...</div>;
-    
-    if (error) return (
-        <div className="error-message">
-            <p>Error: {error}</p>
-            <button onClick={handleManualRefresh} className="refresh-btn">Retry</button>
-        </div>
-    );
     
     if (!bookings || bookings.length === 0) {
         return (
             <div className="no-bookings">
                 <p>You don't have any bookings yet.</p>
                 <p>User email: {currentUser?.email || "No email available"}</p>
-                <button onClick={handleManualRefresh} className="refresh-btn">Refresh Bookings</button>
                 <Link to="/" className="browse-properties-btn">Browse Properties</Link>
             </div>
         );
@@ -57,7 +44,6 @@ const BookingList = () => {
     return (
         <div className="booking-list">
             <h2>Your Bookings</h2>
-            <button onClick={handleManualRefresh} className="refresh-btn">Refresh</button>
             {bookings.map(booking => (
                 <div key={booking.id} className="booking-card">
                     <div className="booking-info">
@@ -76,9 +62,6 @@ const BookingList = () => {
                                 </span>
                             </p>
                         </div>
-                        <Link to={`/bookings/${booking.id}`} className="view-details-btn">
-                            View Details
-                        </Link>
                     </div>
                 </div>
             ))}

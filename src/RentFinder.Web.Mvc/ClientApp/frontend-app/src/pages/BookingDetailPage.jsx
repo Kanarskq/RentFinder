@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import BookingDetail from '../components/bookings/BookingDetail';
+import '../styles/BookingStyles.css';
 
 const BookingDetailPage = () => {
     return (

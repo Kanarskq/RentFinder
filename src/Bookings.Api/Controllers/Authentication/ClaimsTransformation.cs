@@ -39,7 +39,7 @@ public class ClaimsTransformation : IClaimsTransformation
                 Auth0Id = auth0Id,
                 Email = principal.FindFirst(ClaimTypes.Email)?.Value ?? "",
                 Name = principal.FindFirst(ClaimTypes.Name)?.Value ?? "",
-                PasswordHash = "PLACEHOLDER_HASH_FOR_AUTH0_USER", // Change
+                PasswordHash = "PLACEHOLDER_HASH_FOR_AUTH0_USER",
                 Role = UserRoles.Tenant, // Default role
                 EmailVerified = bool.Parse(principal.FindFirst("email_verified")?.Value ?? "false"),
                 CreatedAt = DateTime.UtcNow,

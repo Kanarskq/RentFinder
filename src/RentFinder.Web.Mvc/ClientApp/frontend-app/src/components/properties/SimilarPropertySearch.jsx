@@ -52,7 +52,6 @@ const SimilarPropertySearch = ({ onSearch }) => {
         onSearch(formattedParams);
     };
 
-    // Create proper initial location object with validation
     const initialLocation = searchParams.latitude && searchParams.longitude
         ? {
             lat: parseFloat(searchParams.latitude),

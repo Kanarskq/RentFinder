@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Bookings.Domain.AggregatesModel.MessageAggregate;
+using Bookings.Domain.AggregatesModel.PaymentAggregate;
+using Bookings.Domain.AggregatesModel.BookingAggregate;
 
 namespace Bookings.Infrastructure;
 
@@ -34,5 +36,7 @@ public static class RentFinderRegistration
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
     }
 }

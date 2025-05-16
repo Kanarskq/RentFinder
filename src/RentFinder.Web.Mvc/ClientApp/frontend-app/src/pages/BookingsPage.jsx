@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import BookingList from '../components/bookings/BookingList';
 import { useAuth } from '../hooks/useAuth';
+import '../styles/BookingStyles.css';
 
 const BookingsPage = () => {
     const { isAuthenticated } = useAuth();

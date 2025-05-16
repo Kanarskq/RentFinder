@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bookings.Domain.AggregatesModel.PropertyAggregate;
 
-public class PropertyImage : Entity
+public class PropertyImage : Entity, IAggregateRoot
 {
     public int Id { get; private set; }
     public int PropertyId { get; private set; }

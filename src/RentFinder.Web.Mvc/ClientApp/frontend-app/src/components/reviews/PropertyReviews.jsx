@@ -13,7 +13,7 @@ const PropertyReviews = () => {
     const [error, setError] = useState(null);
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
-    const { isAuthenticated, user } = useContext(AuthContext);
+    const { isAuthenticated, currentUser } = useContext(AuthContext);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [reviewError, setReviewError] = useState(null);
 
@@ -26,7 +26,7 @@ const PropertyReviews = () => {
                 const ratingResponse = await reviewApi.getAveragePropertyRating(id);
                 setAverageRating(ratingResponse.data);
             } catch (err) {
-                console.error('Error fetching reviews:', err);
+                console.log('No reviews found or error:', err);
                 if (err.response && err.response.status === 404) {
                     setReviews([]);
                     setAverageRating(0);
@@ -59,16 +59,23 @@ const PropertyReviews = () => {
         try {
             await reviewApi.createReview({
                 propertyId: parseInt(id),
-                userId: user.id,
+                userId: currentUser.id,
                 rating: newReview.rating,
                 comment: newReview.comment
             });
 
-            const response = await reviewApi.getReviewsByProperty(id);
-            setReviews(response.data);
+            try {
+                const response = await reviewApi.getReviewsByProperty(id);
+                setReviews(response.data);
 
-            const ratingResponse = await reviewApi.getAveragePropertyRating(id);
-            setAverageRating(ratingResponse.data);
+                const ratingResponse = await reviewApi.getAveragePropertyRating(id);
+                setAverageRating(ratingResponse.data);
+            } catch (err) {
+                if (err.response && err.response.status === 404) {
+                    setReviews([]);
+                    setAverageRating(0);
+                }
+            }
 
             setNewReview({ rating: 5, comment: '' });
             setShowReviewForm(false);
@@ -119,6 +126,10 @@ const PropertyReviews = () => {
 
     if (loading) {
         return <div className="reviews-loading">Loading reviews...</div>;
+    }
+
+    if (error) {
+        return <div className="reviews-error">{error}</div>;
     }
 
     return (

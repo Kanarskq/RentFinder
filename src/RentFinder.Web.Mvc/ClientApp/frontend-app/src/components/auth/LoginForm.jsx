@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import '../../styles/ComponentStyles.css';
 
 const LoginForm = () => {
     const { login } = useAuth();

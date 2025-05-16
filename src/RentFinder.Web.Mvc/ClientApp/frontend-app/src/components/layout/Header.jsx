@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import '../../styles/ComponentStyles.css';
 
 const Header = () => {
     const { currentUser, isAuthenticated, logout } = useAuth();
@@ -34,12 +35,12 @@ const Header = () => {
                 <div className="auth-actions">
                     {isAuthenticated ? (
                         <div className="user-menu">
-                            <span className="user-greeting">Hi, {currentUser?.firstName}</span>
+                            <span className="user-greeting">Hi, {currentUser?.name}</span>
                             <button onClick={handleLogout} className="logout-button">Logout</button>
                         </div>
                     ) : (
                         <>
-                            <Link to="/login" className="login-button">Login</Link>
+                                <Link to="/login" className="external-login-button">Login</Link>
                         </>
                     )}
                 </div>

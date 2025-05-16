@@ -363,3 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 /src/RentFinder.Web.Mvc/ClientApp/.env
 /src/RentFinder.Web.Mvc/ClientApp/frontend-app/.env
+/src/Bookings.Domain/ClassDiagram2.cd
+/src/Bookings.Infrastructure/ClassDiagram1.cd
+/ClassDiagram1.png
+/ClassDiagram2.png

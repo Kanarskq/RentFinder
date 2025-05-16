@@ -112,7 +112,6 @@ public class MessageController : ControllerBase
             return NotFound("User not found");
         }
 
-        // Parse the conversation ID to get the other user's ID
         var otherUserId = int.Parse(conversationId.Split('-')[1]);
         await _messageService.MarkConversationAsReadAsync(user.Id, otherUserId);
 

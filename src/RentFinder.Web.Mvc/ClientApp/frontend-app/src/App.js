@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
-import HomePage from './pages/HomePage';
 import SimilarPropertiesPage from './pages/SimilarPropertiesPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
 import BookingsPage from './pages/BookingsPage';
@@ -11,6 +10,7 @@ import ProfilePage from './pages/ProfilePage';
 import MessagesPage from './pages/MessagesPage';
 import AuthCallback from './components/auth/AuthCallback';
 import { AuthProvider } from './context/AuthContext';
+import PropertyFormPage from './pages/PropertyFormPage';
 import PrivateRoute from './components/auth/PrivateRoute';
 import BookingDetailPage from './pages/BookingsPage';
 import './App.css';
@@ -24,9 +24,19 @@ function App() {
             <AuthProvider>
                 <Routes>
                     <Route path="/" element={<MainLayout />}>
-                        <Route index element={<HomePage />} />
+                        <Route index element={<SimilarPropertiesPage />} />
                         <Route path="similar-properties" element={<SimilarPropertiesPage />} />
                         <Route path="property/:id" element={<PropertyDetailPage />} />
+                        <Route path="property/create" element={
+                            <PrivateRoute>
+                                <PropertyFormPage />
+                            </PrivateRoute>
+                        } />
+                        <Route path="property/:id/edit" element={
+                            <PrivateRoute>
+                                <PropertyFormPage />
+                            </PrivateRoute>
+                        } />
                         <Route path="bookings" element={
                             <PrivateRoute>
                                 <BookingsPage />

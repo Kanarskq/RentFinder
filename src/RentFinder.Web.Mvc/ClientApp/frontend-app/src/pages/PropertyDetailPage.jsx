@@ -6,13 +6,14 @@ import '../styles/PropertyStyles.css';
 import GoogleMapsComponent from '../components/maps/GoogleMapsComponent';
 import PropertyReviews from '../components/reviews/PropertyReviews';
 import ContactOwnerButton from '../components/properties/ContactOwnerButton';
+import EditPropertyButton from '../components/properties/EditPropertyButton';
 
 const PropertyDetailPage = () => {
     const { id } = useParams();
     const [property, setProperty] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const [mapMarker, setMapMarker] = useState(null);
 
@@ -22,7 +23,6 @@ const PropertyDetailPage = () => {
                 const response = await propertyApi.getPropertyById(id);
                 setProperty(response.data);
 
-                // Only create the marker once we have property data
                 if (response.data) {
                     setMapMarker({
                         lat: response.data.latitude,
@@ -43,7 +43,6 @@ const PropertyDetailPage = () => {
             fetchProperty();
         }
 
-        // Cleanup function
         return () => {
             setMapMarker(null);
         };
@@ -91,6 +90,8 @@ const PropertyDetailPage = () => {
     }
 
     const imageUrl = `${process.env.REACT_APP_API_URL || 'https://localhost:7000'}/api/property/${id}/image`;
+
+    const isOwner = isAuthenticated && currentUser && property.ownerId === currentUser.id;
 
     return (
         <div className="property-detail-page">
@@ -169,7 +170,6 @@ const PropertyDetailPage = () => {
                                 Coordinates: {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
                             </p>
                         </div>
-
                         <div className="property-actions">
                             <button
                                 className="book-now-button"
@@ -188,6 +188,12 @@ const PropertyDetailPage = () => {
                                 propertyId={property.id}
                                 propertyTitle={property.title}
                             />
+                            {isOwner && (
+                                <EditPropertyButton
+                                    propertyId={property.id}
+                                    className="mt-2 w-full md:w-auto"
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

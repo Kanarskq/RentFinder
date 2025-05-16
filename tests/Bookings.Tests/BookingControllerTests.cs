@@ -30,7 +30,6 @@ namespace Bookings.Tests
         [Test]
         public async Task CreateBooking_WhenCommandSucceeds_ReturnsOkResult()
         {
-            // Arrange
             var request = new CreateBookingRequest(
                 PropertyId: 1,
                 UserId: 2,
@@ -45,10 +44,8 @@ namespace Bookings.Tests
                 .Setup(m => m.Send(It.IsAny<CreateBookingCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.CreateBooking(request);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
             _mediatorMock.Verify(m => m.Send(
                 It.Is<CreateBookingCommand>(cmd =>
@@ -64,7 +61,6 @@ namespace Bookings.Tests
         [Test]
         public async Task CreateBooking_WhenCommandFails_ReturnsBadRequestResult()
         {
-            // Arrange
             var request = new CreateBookingRequest(
                 PropertyId: 1,
                 UserId: 2,
@@ -79,10 +75,8 @@ namespace Bookings.Tests
                 .Setup(m => m.Send(It.IsAny<CreateBookingCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.CreateBooking(request);
 
-            // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             var badRequestResult = result as BadRequestObjectResult;
             Assert.AreEqual("Failed to create booking.", badRequestResult.Value);
@@ -91,9 +85,7 @@ namespace Bookings.Tests
         [Test]
         public async Task GetBookingById_WhenBookingExists_ReturnsOkResultWithBooking()
         {
-            // Arrange
             int bookingId = 1;
-            // Create a booking through the constructor instead of direct property assignment
             var booking = new Booking(
                 propertyId: 1,
                 userId: 2,
@@ -102,17 +94,14 @@ namespace Bookings.Tests
                 totalPrice: 150.0m
             );
 
-            // Use reflection to set the Id since it's a private setter
             typeof(Booking).GetProperty("Id").SetValue(booking, bookingId);
 
             _queriesMock
                 .Setup(q => q.GetBookingByIdAsync(bookingId))
                 .ReturnsAsync(booking);
 
-            // Act
             var result = await _controller.GetBookingById(bookingId);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(booking, okResult.Value);
@@ -121,24 +110,20 @@ namespace Bookings.Tests
         [Test]
         public async Task GetBookingById_WhenBookingDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             int bookingId = 1;
 
             _queriesMock
                 .Setup(q => q.GetBookingByIdAsync(bookingId))
                 .ReturnsAsync((Booking)null);
 
-            // Act
             var result = await _controller.GetBookingById(bookingId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task GetUserBookings_WhenBookingsExist_ReturnsOkResultWithBookings()
         {
-            // Arrange
             int userId = 1;
             var bookings = new List<Booking>
             {
@@ -150,10 +135,8 @@ namespace Bookings.Tests
                 .Setup(q => q.GetUserBookingsAsync(userId))
                 .ReturnsAsync(bookings);
 
-            // Act
             var result = await _controller.GetUserBookings(userId);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(bookings, okResult.Value);
@@ -162,34 +145,28 @@ namespace Bookings.Tests
         [Test]
         public async Task GetUserBookings_WhenUserHasNoBookings_ReturnsNotFoundResult()
         {
-            // Arrange
             int userId = 1;
 
             _queriesMock
                 .Setup(q => q.GetUserBookingsAsync(userId))
                 .ReturnsAsync(new List<Booking>());
 
-            // Act
             var result = await _controller.GetUserBookings(userId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task CancelBooking_WhenCommandSucceeds_ReturnsOkResult()
         {
-            // Arrange
             int bookingId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<CancelBookingCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.CancelBooking(bookingId);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
             _mediatorMock.Verify(m => m.Send(
                 It.Is<CancelBookingCommand>(cmd => cmd.BookingId == bookingId),
@@ -200,21 +177,17 @@ namespace Bookings.Tests
         [Test]
         public async Task CancelBooking_WhenCommandFails_ReturnsNotFoundResult()
         {
-            // Arrange
             int bookingId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<CancelBookingCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.CancelBooking(bookingId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
-        // Helper method to create test bookings with proper initialization
         private Booking CreateTestBooking(int id, int propertyId, int userId)
         {
             var booking = new Booking(

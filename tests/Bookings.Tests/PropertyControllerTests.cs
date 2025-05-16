@@ -52,7 +52,6 @@ namespace Bookings.Tests
         [Test]
         public async Task GetPropertyById_WhenPropertyExists_ReturnsOkResultWithProperty()
         {
-            // Arrange
             int propertyId = 1;
             var property = new Property(
                 1, "Test Property", "Description",
@@ -64,10 +63,8 @@ namespace Bookings.Tests
                 .Setup(q => q.GetPropertyByIdAsync(propertyId))
                 .ReturnsAsync(property);
 
-            // Act
             var result = await _controller.GetPropertyById(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(property, okResult.Value);
@@ -76,24 +73,20 @@ namespace Bookings.Tests
         [Test]
         public async Task GetPropertyById_WhenPropertyDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             int propertyId = 1;
 
             _queriesMock
                 .Setup(q => q.GetPropertyByIdAsync(propertyId))
                 .ReturnsAsync((Property)null);
 
-            // Act
             var result = await _controller.GetPropertyById(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task GetAllProperties_WhenPropertiesExist_ReturnsOkResultWithProperties()
         {
-            // Arrange
             var properties = new List<Property>
             {
                 new Property(1, "Property 1", "Description 1", 40.7128, -74.0060, 1000m, 1, 1, 600, false, true, true, "Apartment", 2010),
@@ -104,10 +97,8 @@ namespace Bookings.Tests
                 .Setup(q => q.GetAllPropertiesAsync())
                 .ReturnsAsync(properties);
 
-            // Act
             var result = await _controller.GetAllProperties();
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(properties, okResult.Value);
@@ -116,22 +107,18 @@ namespace Bookings.Tests
         [Test]
         public async Task GetAllProperties_WhenNoPropertiesExist_ReturnsNotFoundResult()
         {
-            // Arrange
             _queriesMock
                 .Setup(q => q.GetAllPropertiesAsync())
                 .ReturnsAsync(new List<Property>());
 
-            // Act
             var result = await _controller.GetAllProperties();
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task UpdateProperty_WhenPropertyDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             int propertyId = 1;
             var request = new UpdatePropertyRequest(
                 Title: "Updated Property",
@@ -151,30 +138,24 @@ namespace Bookings.Tests
                 .Setup(m => m.Send(It.IsAny<UpdatePropertyCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.UpdateProperty(propertyId, request);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task MarkPropertyAsAvailable_WhenPropertyExists_ReturnsOkResult()
         {
-            // Arrange
             int propertyId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<MarkPropertyAsAvailableCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.MarkPropertyAsAvailable(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
 
-            // Verify command was sent with correct property id
             _mediatorMock.Verify(m => m.Send(
                 It.Is<MarkPropertyAsAvailableCommand>(cmd => cmd.PropertyId == propertyId),
                 It.IsAny<CancellationToken>()),
@@ -184,37 +165,30 @@ namespace Bookings.Tests
         [Test]
         public async Task MarkPropertyAsAvailable_WhenPropertyDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             int propertyId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<MarkPropertyAsAvailableCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.MarkPropertyAsAvailable(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task MarkPropertyAsUnavailable_WhenPropertyExists_ReturnsOkResult()
         {
-            // Arrange
             int propertyId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<MarkPropertyAsUnavailableCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.MarkPropertyAsUnavailable(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
 
-            // Verify command was sent with correct property id
             _mediatorMock.Verify(m => m.Send(
                 It.Is<MarkPropertyAsUnavailableCommand>(cmd => cmd.PropertyId == propertyId),
                 It.IsAny<CancellationToken>()),
@@ -224,24 +198,20 @@ namespace Bookings.Tests
         [Test]
         public async Task MarkPropertyAsUnavailable_WhenPropertyDoesNotExist_ReturnsNotFoundResult()
         {
-            // Arrange
             int propertyId = 1;
 
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<MarkPropertyAsUnavailableCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
-            // Act
             var result = await _controller.MarkPropertyAsUnavailable(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<NotFoundResult>(result);
         }
 
         [Test]
         public async Task AddPropertyImage_WhenImageIsValid_ReturnsOkResult()
         {
-            // Arrange
             int propertyId = 1;
             var fileMock = new Mock<IFormFile>();
             var content = new MemoryStream(new byte[] { 0x01, 0x02, 0x03 });
@@ -267,13 +237,10 @@ namespace Bookings.Tests
                 .Setup(m => m.Send(It.IsAny<AddPropertyImageCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            // Act
             var result = await _controller.AddPropertyImage(propertyId, request);
 
-            // Assert
             Assert.IsInstanceOf<OkResult>(result);
 
-            // Verify command was sent with correct parameters
             _mediatorMock.Verify(m => m.Send(
                 It.Is<AddPropertyImageCommand>(cmd =>
                     cmd.PropertyId == propertyId &&
@@ -286,7 +253,6 @@ namespace Bookings.Tests
         [Test]
         public async Task AddPropertyImage_WhenImageIsEmpty_ReturnsBadRequestResult()
         {
-            // Arrange
             int propertyId = 1;
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.Length).Returns(0);
@@ -297,17 +263,14 @@ namespace Bookings.Tests
                 Caption = "Empty Image"
             };
 
-            // Act
             var result = await _controller.AddPropertyImage(propertyId, request);
 
-            // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
         public async Task AddPropertyImage_WhenImageIsTooLarge_ReturnsBadRequestResult()
         {
-            // Arrange
             int propertyId = 1;
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.Length).Returns(6 * 1024 * 1024); // 6MB, exceeds 5MB limit
@@ -318,17 +281,14 @@ namespace Bookings.Tests
                 Caption = "Large Image"
             };
 
-            // Act
             var result = await _controller.AddPropertyImage(propertyId, request);
 
-            // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
         public async Task AddPropertyImage_WhenImageTypeIsInvalid_ReturnsBadRequestResult()
         {
-            // Arrange
             int propertyId = 1;
             var fileMock = new Mock<IFormFile>();
             fileMock.Setup(f => f.Length).Returns(1000);
@@ -340,17 +300,14 @@ namespace Bookings.Tests
                 Caption = "PDF Document"
             };
 
-            // Act
             var result = await _controller.AddPropertyImage(propertyId, request);
 
-            // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
         public async Task GetPropertiesByStatus_WhenPropertiesExistWithStatus_ReturnsOkResultWithProperties()
         {
-            // Arrange
             string status = PropertyStatus.Available;
             var properties = new List<Property>
             {
@@ -362,10 +319,8 @@ namespace Bookings.Tests
                 .Setup(q => q.GetPropertiesByStatusAsync(status))
                 .ReturnsAsync(properties);
 
-            // Act
             var result = await _controller.GetPropertiesByStatus(status);
 
-            // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = result as OkObjectResult;
             Assert.AreEqual(properties, okResult.Value);
@@ -374,7 +329,6 @@ namespace Bookings.Tests
         [Test]
         public async Task GetPropertyImage_WhenImageExists_ReturnsFileResultWithImage()
         {
-            // Arrange
             int propertyId = 1;
             var imageData = new byte[] { 0x01, 0x02, 0x03 };
             var imageType = "image/jpeg";
@@ -384,10 +338,8 @@ namespace Bookings.Tests
                 .Setup(q => q.GetPropertyImageAsync(propertyId))
                 .ReturnsAsync(image);
 
-            // Act
             var result = await _controller.GetPropertyImage(propertyId);
 
-            // Assert
             Assert.IsInstanceOf<FileContentResult>(result);
             var fileResult = result as FileContentResult;
             Assert.AreEqual(imageData, fileResult.FileContents);

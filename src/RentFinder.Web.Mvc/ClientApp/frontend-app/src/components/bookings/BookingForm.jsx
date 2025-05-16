@@ -1,9 +1,10 @@
 ﻿import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import GooglePayButton from './GooglePayButton';
 import { bookingApi } from '../../api/bookingApi';
 
-const BookingForm = ({ propertyId, price }) => {
+const BookingForm = ({ propertyId, price, landlordId }) => {
     const { isAuthenticated, currentUser } = useAuth();
     const navigate = useNavigate();
     const [bookingData, setBookingData] = useState({
@@ -21,14 +22,31 @@ const BookingForm = ({ propertyId, price }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setBookingData(prev => ({
-            ...prev,
-            [name]: value
-        }));
 
-        if (name === 'startDate' || name === 'endDate') {
-            calculateTotal();
-        }
+        setBookingData(prev => {
+            const newData = {
+                ...prev,
+                [name]: value
+            };
+
+            if (name === 'startDate' || name === 'endDate') {
+                const startDate = name === 'startDate' ? value : prev.startDate;
+                const endDate = name === 'endDate' ? value : prev.endDate;
+
+                if (startDate && endDate) {
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+
+                    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                        const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+                        const total = days * price;
+                        newData.totalPrice = total;
+                    }
+                }
+            }
+
+            return newData;
+        });
     };
 
     const calculateTotal = () => {
@@ -36,13 +54,11 @@ const BookingForm = ({ propertyId, price }) => {
 
         const start = new Date(bookingData.startDate);
         const end = new Date(bookingData.endDate);
+
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+
         const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
         const total = days * price;
-
-        setBookingData(prev => ({
-            ...prev,
-            totalPrice: total
-        }));
 
         return total;
     };
@@ -50,15 +66,25 @@ const BookingForm = ({ propertyId, price }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
-        if (!bookingData.userId && currentUser?.id) {
-            setBookingData(prev => ({
-                ...prev,
-                userId: currentUser.id
-            }));
+        try {
+            await createBooking('Pending');
+        } catch (err) {
+            setError('Failed to create booking. Please try again.');
+            setLoading(false);
         }
+    };
 
+    const handlePaymentSuccess = (paymentResult) => {
+        setLoading(true);
+        createBooking('Confirmed', paymentResult.TransactionId);
+    };
+
+    const handlePaymentError = (error) => {
+        setError(`Payment failed: ${error}`);
+    };
+
+    const createBooking = async (status, transactionId = null) => {
         try {
             const formattedData = {
                 propertyId: parseInt(propertyId),
@@ -67,7 +93,7 @@ const BookingForm = ({ propertyId, price }) => {
                 endDate: new Date(bookingData.endDate).toISOString(),
                 totalPrice: bookingData.totalPrice,
                 createdAt: new Date().toISOString(),
-                status: 'Pending'
+                status: status
             };
 
             const response = await bookingApi.createBooking(formattedData);
@@ -143,9 +169,33 @@ const BookingForm = ({ propertyId, price }) => {
 
             {error && <div className="error-message">{error}</div>}
 
-            <button type="submit" disabled={loading} className="book-button">
-                {loading ? 'Processing...' : 'Book Now'}
-            </button>
+            {bookingData.totalPrice > 0 && (
+                <div className="payment-options">
+                    <GooglePayButton
+                        amount={bookingData.totalPrice}
+                        renterId={currentUser?.id}
+                        landlordId={landlordId}
+                        description={`Booking for property ${propertyId}`}
+                        onPaymentSuccess={handlePaymentSuccess}
+                        onPaymentError={handlePaymentError}
+                        disabled={!bookingData.startDate || !bookingData.endDate}
+                    />
+                    <div className="payment-divider">or</div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="book-button"
+                    >
+                        {loading ? 'Processing...' : 'Book Now (Pay Later)'}
+                    </button>
+                </div>
+            )}
+
+            {(!bookingData.totalPrice || bookingData.totalPrice <= 0) && (
+                <button type="submit" disabled={loading} className="book-button">
+                    {loading ? 'Processing...' : 'Book Now'}
+                </button>
+            )}
         </form>
     );
 };
