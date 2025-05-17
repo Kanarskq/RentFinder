@@ -1,26 +1,6 @@
 using Auth0.AspNetCore.Authentication;
-using Bookings.Api.Application.Commands.Bookings;
-using Bookings.Api.Application.Commands.Identities;
-using Bookings.Api.Application.Commands.Properties;
-using Bookings.Api.Application.Commands.Reviews;
-using Bookings.Api.Application.Queries.Bookings;
-using Bookings.Api.Application.Queries.Properties;
-using Bookings.Api.Application.Queries.Reviews;
-using Bookings.Api.Application.Queries.Users;
 using Bookings.Api.Controllers.Authentication;
-using Bookings.Api.Infrastructure.Messages;
-using Bookings.Api.Infrastructure.Services.Bookings;
-using Bookings.Api.Infrastructure.Services.Messages;
-using Bookings.Api.Infrastructure.Services.Payments;
-using Bookings.Api.Infrastructure.Services.Properties;
-using Bookings.Api.Infrastructure.Services.Reviews;
-using Bookings.Api.Infrastructure.Services.Search;
-using Bookings.Api.Infrastructure.Services.Users;
-using Bookings.Domain.AggregatesModel.BookingAggregate;
-using Bookings.Domain.AggregatesModel.PropertyAggregate;
-using Bookings.Domain.AggregatesModel.ReviewAggregate;
 using Bookings.Infrastructure;
-using Bookings.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -28,7 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Stripe;
-using Bookings.Domain.AggregatesModel.PaymentAggregate;
+using Bookings.Application;
+using Bookings.Application.Services.Bookings;
+using Bookings.Application.Services.Messages;
+using Bookings.Application.Services.Payments;
+using Bookings.Application.Services.Properties;
+using Bookings.Application.Services.Reviews;
+using Bookings.Application.Services.Search;
+using Bookings.Application.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,19 +54,11 @@ builder.Services.AddSwaggerGen(options =>
     options.UseAllOfToExtendReferenceSchemas();
 });
 
-builder.Services.AddMediatR(cfg => {
-    cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly);
-});
-
 builder.Services.AddSingleton<StripeClient>(provider =>
     new StripeClient(builder.Configuration["Stripe:SecretKey"]));
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
-builder.Services.AddScoped<IBookingQueries, BookingQueries>();
-builder.Services.AddScoped<IPropertyQueries, PropertyQueries>();
-builder.Services.AddScoped<IReviewQueries, ReviewQueries>();
-builder.Services.AddScoped<IUserQueries, UserQueries>();
 builder.Services.AddScoped<BookingServices>();
 builder.Services.AddScoped<PropertyServices>();
 builder.Services.AddScoped<ReviewServices>();
@@ -88,38 +67,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IClaimsTransformation, ClaimsTransformation>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-
-builder.Services.AddScoped<IRequestHandler<CreateBookingCommand, bool>, CreateBookingCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<CancelBookingCommand, bool>, CancelBookingCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<CreatePropertyCommand, bool>, CreatePropertyCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<UpdatePropertyCommand, bool>, UpdatePropertyCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<MarkPropertyAsAvailableCommand, bool>, MarkPropertyAsAvailableCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<MarkPropertyAsUnavailableCommand, bool>, MarkPropertyAsUnavailableCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<CreateReviewCommand, bool>, CreateReviewCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<UpdateReviewCommand, bool>, UpdateReviewCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<AddPropertyImageCommand, bool>, AddPropertyImageCommandHandler>();
-builder.Services.AddScoped<IRequestHandler<DeletePropertyImageCommand, bool>, DeletePropertyImageCommandHandler>();
-
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<CreateBookingCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<CreateBookingCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<CancelBookingCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<CancelBookingCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<CreatePropertyCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<CreatePropertyCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<UpdatePropertyCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<UpdatePropertyCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<MarkPropertyAsAvailableCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<MarkPropertyAsAvailableCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<MarkPropertyAsUnavailableCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<MarkPropertyAsUnavailableCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<CreateReviewCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<CreateReviewCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<UpdateReviewCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<UpdateReviewCommand, bool>)); ;
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<AddPropertyImageCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<AddPropertyImageCommand, bool>));
-builder.Services.AddScoped(typeof(IRequestHandler<IdentifiedCommand<DeletePropertyImageCommand, bool>, bool>),
-    typeof(IdentifiedCommandHandler<DeletePropertyImageCommand, bool>));
 
 builder.Services.AddScoped<PropertySearchEngine>();
 builder.Services.AddScoped<IPropertySearchEngine, PropertySearchEngine>();
@@ -168,6 +115,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddRentFinderPersistence(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

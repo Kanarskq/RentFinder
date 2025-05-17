@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit } from 'lucide-react';
+import '../../styles/PropertyButtonStyles.css';
 
 const AddPropertyButton = ({ className }) => {
     const navigate = useNavigate();
@@ -12,7 +13,12 @@ const AddPropertyButton = ({ className }) => {
     return (
         <button
             onClick={handleAddProperty}
-            className={`flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors ${className || ''}`}
+            className={`
+                property-action-btn 
+                add-property-btn 
+                floating-add-btn
+                ${className || ''}
+            `}
             aria-label="Add property"
         >
             <Plus size={20} />

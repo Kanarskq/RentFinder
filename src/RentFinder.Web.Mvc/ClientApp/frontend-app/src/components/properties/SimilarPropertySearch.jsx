@@ -60,7 +60,7 @@ const SimilarPropertySearch = ({ onSearch }) => {
         : null;
 
     return (
-        <form className="similar-property-search-form" onSubmit={handleSubmit}>
+        <form className="similar-property-search-form compact-form" onSubmit={handleSubmit}>
             <h2>Find Properties</h2>
 
             <div className="form-row">

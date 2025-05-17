@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Bookings.Infrastructure.Migrations
 {
    
-    / <inheritdoc />
+    /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
         /// <inheritdoc />

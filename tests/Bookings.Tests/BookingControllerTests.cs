@@ -1,7 +1,7 @@
-using Bookings.Api.Application.Commands.Bookings;
-using Bookings.Api.Application.Queries.Bookings;
 using Bookings.Api.Controllers;
 using Bookings.Api.Controllers.Request.Bookings;
+using Bookings.Application.Commands.Bookings;
+using Bookings.Application.Queries.Bookings;
 using Bookings.Domain.AggregatesModel.BookingAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

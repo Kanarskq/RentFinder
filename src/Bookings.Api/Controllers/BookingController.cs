@@ -1,15 +1,8 @@
-﻿using Bookings.Api.Application.Commands;
-using Bookings.Api.Application.Commands.Bookings;
-using Bookings.Api.Application.Commands.Identities;
-using Bookings.Api.Application.Queries.Bookings;
-using Bookings.Api.Application.Queries.Users;
-using Bookings.Api.Controllers.Request.Bookings;
-using Bookings.Api.Infrastructure.Services.Bookings;
-using Bookings.Domain.AggregatesModel.BookingAggregate;
+﻿using Bookings.Api.Controllers.Request.Bookings;
+using Bookings.Application.Commands.Bookings;
+using Bookings.Application.Queries.Bookings;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace Bookings.Api.Controllers;
 
