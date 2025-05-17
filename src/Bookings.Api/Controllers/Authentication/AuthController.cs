@@ -1,13 +1,11 @@
 ﻿using Auth0.AspNetCore.Authentication;
 using Bookings.Api.Controllers.Request.Users;
-using Bookings.Api.Infrastructure.Services.Users;
-using Bookings.Domain.AggregatesModel.BookingAggregate;
+using Bookings.Application.Services.Users;
 using Bookings.Domain.AggregatesModel.UserAggregate;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace Bookings.Api.Controllers.Authentication;

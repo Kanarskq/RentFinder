@@ -1,0 +1,82 @@
+﻿.property-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+    .property-action-btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+.add-property-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+    .add-property-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-property-btn:active {
+        transform: translateY(0);
+    }
+
+.floating-add-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: auto;
+    padding: 12px 20px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Edit Property Button */
+.edit-property-btn {
+    background-color: #7f8c8d;
+    color: white;
+}
+
+    .edit-property-btn:hover {
+        background-color: #636e72;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-property-btn:active {
+        transform: translateY(0);
+    }
+
+/* Button layouts */
+.btn-full-width {
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-inline {
+    display: inline-flex;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .floating-add-btn {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 16px;
+    }
+
+    .property-action-btn {
+        padding: 8px 14px;
+    }
+}

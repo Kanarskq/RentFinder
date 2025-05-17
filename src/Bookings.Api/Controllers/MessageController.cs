@@ -1,6 +1,6 @@
 ﻿using Bookings.Api.Controllers.Request.Messages;
-using Bookings.Api.Infrastructure.Messages;
-using Bookings.Api.Infrastructure.Services.Users;
+using Bookings.Application.Services.Messages;
+using Bookings.Application.Services.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

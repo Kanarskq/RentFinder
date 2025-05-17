@@ -1,8 +1,7 @@
-﻿using Bookings.Api.Application.Commands.Reviews;
-using Bookings.Api.Application.Queries.Reviews;
-using Bookings.Api.Application.Queries.Users;
-using Bookings.Api.Controllers.Request.Reviews;
-using Bookings.Domain.AggregatesModel.ReviewAggregate;
+﻿using Bookings.Api.Controllers.Request.Reviews;
+using Bookings.Application.Commands.Reviews;
+using Bookings.Application.Queries.Reviews;
+using Bookings.Application.Queries.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

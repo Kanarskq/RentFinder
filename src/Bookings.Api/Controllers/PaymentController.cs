@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Bookings.Api.Controllers.Request.Payments;
-using Bookings.Api.Infrastructure.Services.Payments;
-using Microsoft.Extensions.Logging;
+using Bookings.Application.Services.Payments;
 
 namespace Bookings.Api.Controllers;
 

@@ -1,9 +1,9 @@
-﻿using Bookings.Api.Application.Commands.Properties;
-using Bookings.Api.Application.Queries.Properties;
-using Bookings.Api.Controllers;
+﻿using Bookings.Api.Controllers;
 using Bookings.Api.Controllers.Request.Properties;
-using Bookings.Api.Infrastructure.Services.Properties;
-using Bookings.Api.Infrastructure.Services.Search;
+using Bookings.Application.Commands.Properties;
+using Bookings.Application.Queries.Properties;
+using Bookings.Application.Services.Properties;
+using Bookings.Application.Services.Search;
 using Bookings.Domain.AggregatesModel.PropertyAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Http;

@@ -41,17 +41,24 @@ const SimilarPropertiesPage = () => {
 
     return (
         <div className="similar-properties-page">
-            {isAuthenticated && <AddPropertyButton />}
-            <div className="search-container">
-                <SimilarPropertySearch onSearch={handleSearch} />
-            </div>
+            <div className="page-container property-search-page">
+                <div className="container">
+                    {isAuthenticated && <AddPropertyButton />}
 
-            {searched && (
-                <div className="results-container">
-                    <h2>Search Results</h2>
-                    <PropertyList properties={properties} loading={loading} error={error} />
+                    <div className="search-and-results-layout">
+                        <div className="compact-search-container">
+                            <SimilarPropertySearch onSearch={handleSearch} />
+                        </div>
+
+                        {searched && (
+                            <div className="results-container">
+                                <h2 className="results-title">Search Results</h2>
+                                <PropertyList properties={properties} loading={loading} error={error} />
+                            </div>
+                        )}
+                    </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 };

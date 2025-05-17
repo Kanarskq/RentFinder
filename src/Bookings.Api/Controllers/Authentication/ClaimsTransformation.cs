@@ -1,4 +1,4 @@
-﻿using Bookings.Api.Infrastructure.Services.Users;
+﻿using Bookings.Application.Services.Users;
 using Bookings.Domain.AggregatesModel.UserAggregate;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
